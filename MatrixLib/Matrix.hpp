@@ -111,6 +111,10 @@ namespace Core
          */
         Matrix ( Matrix < T > &&other ) noexcept;
         /**
+         * @brief Cleans the matrix and deallocates the storage.
+         */
+        ~Matrix ();
+        /**
          * @brief Copies the right matrix into the left one.
          * @param rhs The rhs matrix that should be copied into this one.
          * @return A reference to the new copied into matrix
@@ -122,10 +126,6 @@ namespace Core
          * @return A reference to the new moved into matrix
          */
         Matrix < T > &operator = ( Matrix < T > &&rhs ) noexcept;
-        /**
-         * @brief Cleans the matrix and deallocates the storage.
-         */
-        ~Matrix ();
         /**
          * @brief Gets the number of rows in the matrix.
          * @return The number of rows in the matrix.
@@ -388,6 +388,13 @@ namespace Core
     {
     }
     template < class T >
+    Matrix < T >::~Matrix () //Destructor
+    {
+        this->_numOfRows = 0;
+        this->_numOfColumns = 0;
+        delete[] this->_data;
+    }
+    template < class T >
     Matrix < T > &Matrix < T >::operator = ( const Matrix < T > &rhs ) // Copy Assignment
     {
         if ( this == &rhs )
@@ -405,13 +412,6 @@ namespace Core
         this->_numOfColumns = std::exchange ( rhs._numOfColumns , 0 );
         this->_data = std::exchange ( rhs._data , nullptr );
         return *this;
-    }
-    template < class T >
-    Matrix < T >::~Matrix () //Destructor
-    {
-        this->_numOfRows = 0;
-        this->_numOfColumns = 0;
-        delete[] this->_data;
     }
     template < class T >
     std::size_t Matrix < T >::numOfRows () const
@@ -464,7 +464,7 @@ namespace Core
     template < class T >
     bool Matrix < T >::isSquare () const
     {
-        return _numOfRows != _numOfColumns;
+        return _numOfRows == _numOfColumns;
     }
     template < class T >
     bool Matrix < T >::isVector () const
@@ -541,12 +541,10 @@ namespace Core
     template < class T >
     std::vector < T > Matrix < T >::row ( std::size_t i ) const
     {
-        std::vector < T > result ( _numOfColumns );
-        const std::size_t startIndex = ( i - 1 ) * _numOfColumns;
-        const std::size_t endIndex = startIndex + _numOfColumns;
-        for ( std::size_t index = startIndex; index < endIndex; index++ )
+        std::vector < T > result ( this->_numOfColumns );
+        for ( int index = 0; index < this->_numOfRows; ++index )
         {
-            result.push_back ( _data[ index ] );
+            result[ index ] ( this->getElementInner ( i , index + 1 ) );
         }
         return result;
     }
@@ -554,9 +552,9 @@ namespace Core
     std::vector < T > Matrix < T >::column ( std::size_t j ) const
     {
         std::vector < T > result ( this->_numOfRows );
-        for ( int i = 0; i < this->_numOfRows; ++i )
+        for ( int index = 0; index < this->_numOfRows; ++index )
         {
-            result[ i ] ( this->getElementInner ( i + 1 , j ) );
+            result[ index ] ( this->getElementInner ( index + 1 , j ) );
         }
         return result;
     }
@@ -568,9 +566,9 @@ namespace Core
             throw std::invalid_argument ( "The matrix must be a square matrix" );
         }
         std::vector < T > result ( this->_numOfRows );
-        for ( std::size_t i = 0; i < this->_numOfRows; i++ )
+        for ( std::size_t index = 0; index < this->_numOfRows; index++ )
         {
-            result[ i ] = this->getElementInner ( i + 1 , i + 1 );
+            result[ index ] = this->getElementInner ( index + 1 , index + 1 );
         }
         return result;
     }
