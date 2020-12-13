@@ -47,6 +47,12 @@ namespace Core
          * @param j The column number to check
          */
         void checkBounds ( std::size_t i , std::size_t j ) const;
+        /**
+         * @brief Gets the element at the specified row and column but without a bounds check
+         * @param i The row number the element is at. Starting at 1.
+         * @param j The column number the element is at. Starting at 1.
+         * @return The element at row i and column j.
+         */
         T getElementInner ( std::size_t i , std::size_t j ) const;
     public:
         using element_type = T;
@@ -524,6 +530,10 @@ namespace Core
         {
             for ( int j = i + 1; j <= this->_numOfColumns; ++j )
             {
+                if ( std::fabs ( this->getElementInner ( i , j ) - this->getElementInner ( j , i ) ) > std::numeric_limits < T >::epsilon () )
+                {
+                    return false;
+                }
             }
         }
         return true;
