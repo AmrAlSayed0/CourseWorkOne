@@ -63,7 +63,7 @@ namespace Core
          */
         static Matrix < T > identity ( std::size_t numOfRowsOrColumns );
         /**
-         * @brief Augments the second matrix on to the first one and returns a new matrix. Both matricies must have the same number of rows.
+         * @brief Augments the second matrix on to the first one and returns a new matrix. Both matrices must have the same number of rows.
          * @param A The matrix to augment to.
          * @param B The matrix to augment with.
          * @return A new matrix that is the result of the augmentation.
@@ -111,7 +111,7 @@ namespace Core
          */
         Matrix ( Matrix < T > &&other ) noexcept;
         /**
-         * @brief Cleans the matrix and deallocates the storage.
+         * @brief Cleans the matrix and de-allocates the storage.
          */
         ~Matrix ();
         /**
@@ -526,9 +526,9 @@ namespace Core
         {
             return false;
         }
-        for ( int i = 1; i <= this->_numOfRows; ++i )
+        for ( std::size_t i = 1; i <= this->_numOfRows; ++i )
         {
-            for ( int j = i + 1; j <= this->_numOfColumns; ++j )
+            for ( std::size_t j = i + 1; j <= this->_numOfColumns; ++j )
             {
                 if ( std::fabs ( this->getElementInner ( i , j ) - this->getElementInner ( j , i ) ) > std::numeric_limits < T >::epsilon () )
                 {
@@ -542,7 +542,7 @@ namespace Core
     std::vector < T > Matrix < T >::row ( std::size_t i ) const
     {
         std::vector < T > result ( this->_numOfColumns );
-        for ( int index = 0; index < this->_numOfRows; ++index )
+        for ( std::size_t index = 0; index < this->_numOfRows; ++index )
         {
             result[ index ] ( this->getElementInner ( i , index + 1 ) );
         }
@@ -552,7 +552,7 @@ namespace Core
     std::vector < T > Matrix < T >::column ( std::size_t j ) const
     {
         std::vector < T > result ( this->_numOfRows );
-        for ( int index = 0; index < this->_numOfRows; ++index )
+        for ( std::size_t index = 0; index < this->_numOfRows; ++index )
         {
             result[ index ] ( this->getElementInner ( index + 1 , j ) );
         }
@@ -652,11 +652,11 @@ namespace Core
             throw std::invalid_argument ( "The number of columns of the left matrix must be equal to the number of row of the right matrix." );
         }
         Matrix temp ( this->_numOfRows , right._numOfColumns );
-        for ( int i = 1; i <= temp._numOfRows; ++i )
+        for ( std::size_t i = 1; i <= temp._numOfRows; ++i )
         {
-            for ( int j = 1; j <= temp._numOfColumns; ++j )
+            for ( std::size_t j = 1; j <= temp._numOfColumns; ++j )
             {
-                for ( int k = 1; k <= this->_numOfColumns; ++k )
+                for ( std::size_t k = 1; k <= this->_numOfColumns; ++k )
                 {
                     temp.at ( i , j ) += ( this->at ( i , k ) * right.getElementInner ( k , j ) );
                 }
@@ -667,9 +667,9 @@ namespace Core
     template < class T >
     Matrix < T > &Matrix < T >::operator *= ( const T &right )
     {
-        for ( int i = 1; i <= this->_numOfRows; ++i )
+        for ( std::size_t i = 1; i <= this->_numOfRows; ++i )
         {
-            for ( int j = 1; j <= this->_numOfColumns; ++j )
+            for ( std::size_t j = 1; j <= this->_numOfColumns; ++j )
             {
                 this->at ( i , j ) *= right;
             }
@@ -679,9 +679,9 @@ namespace Core
     template < class T >
     Matrix < T > &Matrix < T >::operator /= ( const T &right )
     {
-        for ( int i = 1; i <= this->_numOfRows; ++i )
+        for ( std::size_t i = 1; i <= this->_numOfRows; ++i )
         {
-            for ( int j = 1; j <= this->_numOfColumns; ++j )
+            for ( std::size_t j = 1; j <= this->_numOfColumns; ++j )
             {
                 this->at ( i , j ) /= right;
             }
