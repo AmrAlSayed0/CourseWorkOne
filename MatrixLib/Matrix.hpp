@@ -168,7 +168,7 @@ namespace Core
          */
         T getElement ( std::size_t i , std::size_t j ) const;
         /**
-         * @brief Gets the row of the specified number as a vector. This vector points directly to the data and the data inside it would be invalid after an operation that changes the dimensions of the matrix
+         * @brief Gets the row of the specified number as a vector.
          * @param i The row number to get.
          * @return The specified row as a vector.
          */
@@ -225,6 +225,11 @@ namespace Core
          * @return A copy of the diagonal
          */
         std::vector < T > diag () const;
+        /**
+         * @brief Calculates the detrminant of the matrix. Must be a square matrix.
+         * @return The determinant of the matrix;
+         */
+        T determinant () const;
         /**
          * @brief Adds the right matrix to this one. Must be of the same size.
          * @param right The matrix to add.
@@ -581,6 +586,28 @@ namespace Core
             result[ index ] ( this->getElementInner ( index + 1 , j ) );
         }
         return result;
+    }
+    template < class T >
+    T Matrix < T >::determinant () const
+    {
+        if ( !this->isSquare () )
+        {
+            throw std::invalid_argument ( "Can't calcualte the determinant of a non-square matrix" );
+        }
+        if ( this->_numOfRows == 0 )
+        {
+            return 0;
+        }
+        if ( this->_numOfRows == 1 )
+        {
+            return this->getElementInner ( 1 , 1 );
+        }
+        if ( this->_numOfRows == 2 )
+        {
+            return ( this->getElementInner ( 1 , 1 ) * this->getElementInner ( 2 , 2 ) ) - ( this->getElementInner ( 1 , 2 ) * this->getElementInner ( 2 , 1 ) );
+        }
+        //TODO: Implement for higher sizes.
+        return 0;
     }
     template < class T >
     std::vector < T > Matrix < T >::diag () const
