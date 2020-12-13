@@ -274,7 +274,19 @@ namespace Core
          * @brief Transforms each element in the matrix using the provided function.
          * @param func The function to apply to each element.
          */
-        void each ( std::function < T ( T ) > func );
+        void each ( const std::function < T ( T ) > &func );
+        /**
+         * @brief Transforms each element in the specified row using the provided function.
+         * @param i The row to apply the function on.
+         * @param func The function to apply to each row element.
+         */
+        void eachInRow ( std::size_t i , const std::function < T ( T ) > &func );
+        /**
+         * @brief Transforms each element in the specified row using the provided function.
+         * @param j The row to apply the function on.
+         * @param func The function to apply to each row element.
+         */
+        void eachInColumn ( std::size_t j , const std::function < T ( T ) > &func );
     };
 }
 namespace Core
@@ -740,7 +752,7 @@ namespace Core
         return *this;
     }
     template < class T >
-    void Matrix < T >::each ( std::function < T ( T ) > func )
+    void Matrix < T >::each ( const std::function < T ( T ) > &func )
     {
         for ( std::size_t i = 1; i <= this->_numOfRows; i++ )
         {
@@ -749,6 +761,24 @@ namespace Core
                 T &toModify = this->at ( i , j );
                 toModify = func ( toModify );
             }
+        }
+    }
+    template < class T >
+    void Matrix < T >::eachInRow ( std::size_t i , const std::function < T ( T ) > &func )
+    {
+        for ( int j = 1; j <= this->_numOfColumns; ++j )
+        {
+            T &toModify = this->at ( i , j );
+            toModify = func ( toModify );
+        }
+    }
+    template < class T >
+    void Matrix < T >::eachInColumn ( std::size_t j , const std::function < T ( T ) > &func )
+    {
+        for ( int i = 1; i <= this->_numOfRows; ++i )
+        {
+            T &toModify = this->at ( i , j );
+            toModify = func ( toModify );
         }
     }
     template < class T >
