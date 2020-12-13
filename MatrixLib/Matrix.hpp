@@ -178,11 +178,35 @@ namespace Core
          * @return Whether the matrix is square or not.
          */
         bool isSquare () const;
+        /**
+         * @brief Checks if the matrix is a vector i.e only one row.
+         * @return Whether the matrix is a vector or not.
+         */
         bool isVector () const;
+        /**
+         * @brief Checks if the matrix is a column i.e only one column
+         * @return
+         */
         bool isColumn () const;
+        /**
+         * @brief Checks if the matrix elements only in the upper triangle.
+         * @return Whether the matrix is upper triangle. Also returns false for non-square matrices.
+         */
         bool isUpperTri () const;
+        /**
+         * @brief Checks if the matrix elements only in the lower triangle.
+         * @return Whether the matrix is lower triangle. Also returns false for non-square matrices.
+         */
         bool isLowerTri () const;
+        /**
+         * @brief Checks if the matrix elements only in the diagonal.
+         * @return Whether the matrix is diagonal. Also returns false for non-square matrices.
+         */
         bool isDiagonal () const;
+        /**
+         * @brief Checks if the matrix is symmetrical i.e a ( i , j ) = a ( j , i ) for all values of i and j.
+         * @return Whether the matrix is symmetrical. Also returns false for non-square matrices.
+         */
         bool isSymmetric () const;
         /**
          * @brief Gets a copy of the specified row.
@@ -228,7 +252,7 @@ namespace Core
         /**
          * @brief Divides each element of the matrix with the given value.
          * @param right The value to divide by.
-         * @return The divided value.
+         * @return The divided matrix.
          */
         Matrix < T > &operator /= ( const T &right );
         /**
