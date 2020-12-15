@@ -1,5 +1,5 @@
-#ifndef MATRIXLIB_MATRIX_H
-#define MATRIXLIB_MATRIX_H
+#ifndef COURSEWORKONE_MATRIX_H
+#define COURSEWORKONE_MATRIX_H
 #include <climits>
 #include <cstddef>
 #include <cmath>
@@ -425,7 +425,7 @@ namespace Core
     Matrix < T >::Matrix ( Matrix < T > &&other ) noexcept
             : _numOfRows ( std::exchange ( ( std::size_t & ) other._numOfRows , ( std::size_t && ) 0 ) ) ,
               _numOfColumns ( std::exchange ( ( std::size_t & ) other._numOfColumns , ( std::size_t && ) 0 ) ) ,
-              _data ( std::exchange < T * > ( ( T *& ) other._data , nullptr ) ) //Move Constructor
+              _data ( std::exchange < T * , T * > ( ( T *& ) other._data , nullptr ) ) //Move Constructor
     {
     }
     template < class T >
@@ -449,9 +449,9 @@ namespace Core
     template < class T >
     Matrix < T > &Matrix < T >::operator = ( Matrix < T > &&rhs ) noexcept // Move Assignment
     {
-        this->_numOfRows = std::exchange ( rhs._numOfRows , 0 );
-        this->_numOfColumns = std::exchange ( rhs._numOfColumns , 0 );
-        this->_data = std::exchange ( rhs._data , nullptr );
+        this->_numOfRows = std::exchange ( ( std::size_t & ) rhs._numOfRows , ( std::size_t && ) 0 );
+        this->_numOfColumns = std::exchange ( ( std::size_t & ) rhs._numOfColumns , ( std::size_t && ) 0 );
+        this->_data = std::exchange < T * , T * > ( ( T *& ) rhs._data , nullptr );
         return *this;
     }
     template < class T >
@@ -766,7 +766,7 @@ namespace Core
     template < class T >
     void Matrix < T >::eachInRow ( std::size_t i , const std::function < T ( T ) > &func )
     {
-        for ( int j = 1; j <= this->_numOfColumns; ++j )
+        for ( std::size_t j = 1; j <= this->_numOfColumns; ++j )
         {
             T &toModify = this->at ( i , j );
             toModify = func ( toModify );
@@ -775,7 +775,7 @@ namespace Core
     template < class T >
     void Matrix < T >::eachInColumn ( std::size_t j , const std::function < T ( T ) > &func )
     {
-        for ( int i = 1; i <= this->_numOfRows; ++i )
+        for ( std::size_t i = 1; i <= this->_numOfRows; ++i )
         {
             T &toModify = this->at ( i , j );
             toModify = func ( toModify );
@@ -817,4 +817,4 @@ namespace Core
         return ( temp /= right );
     }
 }
-#endif //MATRIXLIB_MATRIX_H
+#endif //COURSEWORKONE_MATRIX_H
