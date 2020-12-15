@@ -3,19 +3,21 @@
 #include <string>
 #include <vector>
 #include "MatrixLib/Matrix.hpp"
+#include "Solution/Part1/GaussElimination.hpp"
 #include "Solution/Part3/NewtonInterpolation.hpp"
 using float_type = float;
+void present_part_1 ();
 void present_part_3 ();
 template < class T >
 void read_x_and_y_values ( const std::string &path , std::vector < T > &xValues , std::vector < T > &yValues );
 template < class T >
-T parseStringToFloatType ( std::string &toParse );
+T parse_string_to_float_type ( std::string &toParse );
 template <>
-float parseStringToFloatType ( std::string &toParse );
+float parse_string_to_float_type ( std::string &toParse );
 template <>
-double parseStringToFloatType ( std::string &toParse );
+double parse_string_to_float_type ( std::string &toParse );
 template <>
-long double parseStringToFloatType ( std::string &toParse );
+long double parse_string_to_float_type ( std::string &toParse );
 template < class T >
 void print_matrix ( Core::Matrix < T > &mat );
 template < class T >

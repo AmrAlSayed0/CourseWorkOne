@@ -1,11 +1,34 @@
 #include <fstream>
 #include <sstream>
 #include <memory>
+#include <iostream>
 #include "main.hpp"
 int main ()
 {
+    present_part_1 ();
     present_part_3 ();
     return 0;
+}
+void present_part_1 ()
+{
+    int n;
+    std::cout << "\nEnter the no. of equations\n";
+    std::cin >> n;                //input the no. of equations
+
+    GaussElimination GL ( n );
+    std::cout << "\nEnter the elements of the matrix row by row space separated:\n";
+    GL.SetSource ();
+    GL.Apply_Pivotisation ();
+    GL.Print_Matrix ();
+    std::cout << "\n==================================================\n";
+    GL.Perform_Elimination ();
+    std::cout << "\n==================================================\n";
+    GL.back_substitution ();
+    std::cout << "\nThe values of the variables are as follows:\n";
+    for ( int i = 0; i < GL.nd; i++ )
+    {
+        std::cout << GL.result[ i ] << std::endl; // Print the values of x, y,z,....
+    }
 }
 void present_part_3 ()
 {
@@ -48,35 +71,15 @@ void read_x_and_y_values ( const std::string &path , std::vector < T > &xValues 
         {
             if ( i == 0 )
             {
-                xValues.push_back ( parseStringToFloatType < T > ( colValue ) );
+                xValues.push_back ( parse_string_to_float_type < T > ( colValue ) );
             }
             else if ( i == 1 )
             {
-                yValues.push_back ( parseStringToFloatType < T > ( colValue ) );
+                yValues.push_back ( parse_string_to_float_type < T > ( colValue ) );
             }
             i++;
         }
     }
-}
-template < class T >
-T parseStringToFloatType ( std::string &toParse )
-{
-    return std::stold ( toParse );
-}
-template <>
-float parseStringToFloatType ( std::string &toParse )
-{
-    return std::stof ( toParse );
-}
-template <>
-double parseStringToFloatType ( std::string &toParse )
-{
-    return std::stod ( toParse );
-}
-template <>
-long double parseStringToFloatType ( std::string &toParse )
-{
-    return std::stold ( toParse );
 }
 template < class T >
 void print_matrix ( Core::Matrix < T > &mat )
@@ -140,6 +143,26 @@ void print_coefficients ( std::vector < T > coefficients , const std::string &fi
     out.flush ();
     out.close ();
     printf ( "\n" );
+}
+template < class T >
+T parse_string_to_float_type ( std::string &toParse )
+{
+    return std::stold ( toParse );
+}
+template <>
+float parse_string_to_float_type ( std::string &toParse )
+{
+    return std::stof ( toParse );
+}
+template <>
+double parse_string_to_float_type ( std::string &toParse )
+{
+    return std::stod ( toParse );
+}
+template <>
+long double parse_string_to_float_type ( std::string &toParse )
+{
+    return std::stold ( toParse );
 }
 template < class T >
 std::string get_padded_float_format ()
