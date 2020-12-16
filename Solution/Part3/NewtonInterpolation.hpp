@@ -52,6 +52,7 @@ namespace Solution
             std::size_t n = x.size ();
             std::vector < T > calculationVector = std::vector < T > ( n );
             this->bValues.clear ();
+            this->bValues.resize ( n );
             for ( std::size_t i = 0; i < n; ++i )
             {
                 if ( i == 0 )
@@ -68,12 +69,13 @@ namespace Solution
                         calculationVector[ j ] = ( ( calculationVector[ j + 1 ] - calculationVector[ j ] ) / ( x[ j + i ] - x[ j ] ) );
                     }
                 }
-                this->bValues.push_back ( calculationVector[ 0 ] );
+                this->bValues[ i ] = calculationVector[ 0 ];
             }
             this->xValues.clear ();
+            this->xValues.resize ( n );
             for ( int i = 0; i < n; ++i )
             {
-                this->xValues.push_back ( x[ i ] );
+                this->xValues[ i ] = x[ i ];
             }
             this->isFit = true;
         }

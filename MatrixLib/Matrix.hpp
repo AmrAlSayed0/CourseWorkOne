@@ -442,8 +442,11 @@ namespace Core
         {
             return *this;
         }
-        Matrix < T > temp ( rhs );
-        Matrix < T >::swap ( ( Matrix < T > & ) *this , ( Matrix < T > & ) temp );
+        this->_numOfRows = rhs._numOfRows;
+        this->_numOfColumns = rhs._numOfColumns;
+        delete[] this->_data;
+        this->_data = new T[this->_numOfRows * this->_numOfColumns];
+        std::copy ( &rhs._data[ 0 ] , &rhs._data[ 0 ] + ( rhs._numOfRows * rhs._numOfColumns ) , &this->_data[ 0 ] );
         return *this;
     }
     template < class T >
@@ -500,22 +503,22 @@ namespace Core
     std::vector < T > Matrix < T >::operator [] ( std::size_t i )
     {
         size_t rowIndex = i - 1;
-        return std::vector < T > ( &_data[ rowIndex * _numOfColumns ] , &_data[ rowIndex * _numOfColumns + _numOfColumns ] );
+        return std::vector < T > ( &this->_data[ rowIndex * this->_numOfColumns ] , &this->_data[ rowIndex * this->_numOfColumns + this->_numOfColumns ] );
     }
     template < class T >
     bool Matrix < T >::isSquare () const
     {
-        return _numOfRows == _numOfColumns;
+        return this->_numOfRows == this->_numOfColumns;
     }
     template < class T >
     bool Matrix < T >::isVector () const
     {
-        return _numOfRows == 1;
+        return this->_numOfRows == 1;
     }
     template < class T >
     bool Matrix < T >::isColumn () const
     {
-        return _numOfColumns == 1;
+        return this->_numOfColumns == 1;
     }
     template < class T >
     bool Matrix < T >::isUpperTri () const
