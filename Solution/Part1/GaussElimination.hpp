@@ -11,13 +11,17 @@
 class GaussElimination {
 public:
 	int nd = 3;
-	float _matrix[3][4], result[3];
+	float** _matrix;
+	float* result;
+	bool valid_solution =false;
 	GaussElimination(int d);
 	void SetSource();
 	void Apply_Pivotisation();
-	void Print_Matrix();
+	void Print_Matrix(float** m);
 	void back_substitution();
 	void Perform_Elimination();
+	float** lower();
+	int determinantOfMatrix(float** f);
 	virtual ~GaussElimination();
 };
 
