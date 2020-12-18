@@ -25,7 +25,7 @@ namespace Solution
         template < class T >
         T CubicSplineInterpolation < T >::getSecondDerivative ( std::size_t index )
         {
-            if ( index == 0 || index == this->xCoeffs.size () )
+            if ( index == 0 || index == this->xValues.size () - 1 )
             {
                 return 0;
             }
@@ -37,6 +37,14 @@ namespace Solution
             if ( x < this->xValues[ 0 ] || x > this->xValues[ this->xValues.size () - 1 ] )
             {
                 return std::numeric_limits < T >::min ();
+            }
+            if ( x == this->xValues[ 0 ] )
+            {
+                return this->yValues[ 0 ];
+            }
+            if ( x == this->xValues[ this->xValues.size () - 1 ] )
+            {
+                return this->yValues[ this->xValues.size () - 1 ];
             }
             std::size_t i = 1;
             while ( true )
@@ -55,10 +63,18 @@ namespace Solution
             const T d2f_im1 = getSecondDerivative ( i - 1 );
             const T ximXim1 = xi - xim1;
             // @formatter:off
-            return ( ( d2f_im1 * std::pow ( xi - x , 3 ) ) / ( 6 * ximXim1 ) ) +
-                   ( ( d2f_i * std::pow ( x - xim1 , 3 ) ) / ( 6 * ximXim1 ) ) +
-                   ( ( ( yim1 / ximXim1 ) - ( ( d2f_im1 * ximXim1 ) / 6 ) ) * ( xi - x ) ) +
-                   ( ( ( yi / ximXim1 ) - ( ( d2f_i * ximXim1 ) / 6 ) ) * ( x - xim1 ) );
+            const T firstTerm = ( ( d2f_im1 * std::pow ( xi - x , 3 ) ) / ( 6 * ximXim1 ) );
+            const T secondTerm = ( ( d2f_i * std::pow ( x - xim1 , 3 ) ) / ( 6 * ximXim1 ) );
+            const T thirdTerm = ( ( ( yim1 / ximXim1 ) - ( ( d2f_im1 * ximXim1 ) / 6 ) ) * ( xi - x ) );
+            const T fourthTerm = ( ( ( yi / ximXim1 ) - ( ( d2f_i * ximXim1 ) / 6 ) ) * ( x - xim1 ) );
+            return firstTerm +
+                   secondTerm +
+                   thirdTerm +
+                   fourthTerm;
+//            return ( ( d2f_im1 * std::pow ( xi - x , 3 ) ) / ( 6 * ximXim1 ) ) +
+//                   ( ( d2f_i * std::pow ( x - xim1 , 3 ) ) / ( 6 * ximXim1 ) ) +
+//                   ( ( ( yim1 / ximXim1 ) - ( ( d2f_im1 * ximXim1 ) / 6 ) ) * ( xi - x ) ) +
+//                   ( ( ( yi / ximXim1 ) - ( ( d2f_i * ximXim1 ) / 6 ) ) * ( x - xim1 ) );
             // @formatter:on
         }
         template < class T >

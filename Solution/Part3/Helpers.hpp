@@ -4,7 +4,63 @@
 #include <vector>
 #include <fstream>
 #include <sstream>
+#include <algorithm>
 #include "../../MatrixLib/Matrix.hpp"
+namespace Helpers
+{
+    template < class T >
+    T strToFloat ( std::string &toParse )
+    {
+        return std::stold ( toParse );
+    }
+    template <>
+    float strToFloat < float > ( std::string &toParse )
+    {
+        return std::stof ( toParse );
+    }
+    template <>
+    double strToFloat < double > ( std::string &toParse )
+    {
+        return std::stod ( toParse );
+    }
+    template <>
+    long double strToFloat < long double > ( std::string &toParse )
+    {
+        return std::stold ( toParse );
+    }
+    template < class T >
+    std::string getFloatFormat ()
+    {
+        return "Lf";
+    }
+    template <>
+    std::string getFloatFormat < float > ()
+    {
+        return "f";
+    }
+    template <>
+    std::string getFloatFormat < double > ()
+    {
+        return "lf";
+    }
+    template <>
+    std::string getFloatFormat < long double > ()
+    {
+        return "Lf";
+    }
+    template < typename ... Args >
+    std::string string_format ( const std::string &format , Args ... args )
+    {
+        int size = snprintf ( nullptr , 0 , format.c_str () , args ... ) + 1; // Extra space for '\0'
+        if ( size <= 0 )
+        {
+            throw std::runtime_error ( "Error during formatting." );
+        }
+        std::unique_ptr < char[] > buf ( new char[size] );
+        snprintf ( buf.get () , static_cast<std::size_t>(size) , format.c_str () , args ... );
+        return std::string ( buf.get () , buf.get () + size - 1 ); // We don't want the '\0' inside
+    }
+}
 //**********************************************************************//
 //                                                                      //
 //                             DECLARATIONS                             //
@@ -12,39 +68,15 @@
 //**********************************************************************//
 
 template < class T >
-void readXAndYvalues ( const std::string &path , std::vector < T > &xValues , std::vector < T > &yValues );
+void readXAndYValues ( const std::string &path , std::vector < T > &xValues , std::vector < T > &yValues );
 template < class T >
-T parse_string_to_float_type ( std::string &toParse );
-template <>
-float parse_string_to_float_type ( std::string &toParse );
-template <>
-double parse_string_to_float_type ( std::string &toParse );
-template <>
-long double parse_string_to_float_type ( std::string &toParse );
+std::vector < T > getTestXs ( std::vector < T > &vector );
 template < class T >
-void print_matrix ( Core::Matrix < T > &mat );
+void printMatrix ( Core::Matrix < T > &mat );
 template < class T >
 void printPredictionResult ( const std::vector < T > &xValues , const std::vector < T > &yValues , const std::vector < T > &predictedYValues , const std::string &outputFilePath );
 template < class T >
 void printCoefficients ( std::vector < T > coefficients , const std::string &filePath );
-template < class T >
-std::string get_padded_float_format ();
-template <>
-std::string get_padded_float_format < float > ();
-template <>
-std::string get_padded_float_format < double > ();
-template <>
-std::string get_padded_float_format < long double > ();
-template < class T >
-std::string get_unpadded_float_format ();
-template <>
-std::string get_unpadded_float_format < float > ();
-template <>
-std::string get_unpadded_float_format < double > ();
-template <>
-std::string get_unpadded_float_format < long double > ();
-template < typename ... Args >
-std::string string_format ( const std::string &format , Args ... args );
 //**********************************************************************//
 //                                                                      //
 //                           IMPLEMENTATIONS                            //
@@ -52,7 +84,7 @@ std::string string_format ( const std::string &format , Args ... args );
 //**********************************************************************//
 
 template < class T >
-void readXAndYvalues ( const std::string &path , std::vector < T > &xValues , std::vector < T > &yValues )
+void readXAndYValues ( const std::string &path , std::vector < T > &xValues , std::vector < T > &yValues )
 {
     std::fstream firstDataStream;
     firstDataStream.open ( path , std::ios::in );
@@ -73,18 +105,35 @@ void readXAndYvalues ( const std::string &path , std::vector < T > &xValues , st
         {
             if ( i == 0 )
             {
-                xValues.push_back ( parse_string_to_float_type < T > ( colValue ) );
+                xValues.push_back ( Helpers::strToFloat < T > ( colValue ) );
             }
             else if ( i == 1 )
             {
-                yValues.push_back ( parse_string_to_float_type < T > ( colValue ) );
+                yValues.push_back ( Helpers::strToFloat < T > ( colValue ) );
             }
             i++;
         }
     }
 }
 template < class T >
-void print_matrix ( Core::Matrix < T > &mat )
+std::vector < T > getTestXs ( std::vector < T > &vector )
+{
+    T maxX = *( std::max_element ( vector.begin () , vector.end () ) );
+    T minX = *( std::min_element ( vector.begin () , vector.end () ) );
+    T diff = maxX - minX;
+    constexpr size_t size = 500;
+    std::vector < T > result ( size );
+    result[ 0 ] = maxX;
+    result[ size - 1 ] = minX;
+    T diffInterval = diff / ( ( T ) ( size - 1 ) );
+    for ( std::size_t i = 1; i < size - 1; ++i )
+    {
+        result[ i ] = result[ i - 1 ] - diffInterval;
+    }
+    return result;
+}
+template < class T >
+void printMatrix ( Core::Matrix < T > &mat )
 {
     size_t numOfRows = mat.numOfRows ();
     size_t numOfColumn = mat.numOfColumns ();
@@ -110,25 +159,26 @@ void printPredictionResult ( const std::vector < T > &xValues , const std::vecto
         T y = yValues[ i ];
         T yPred = predictedYValues[ i ];
         T diff = std::fabs ( y - yPred );
-        std::string formatString = "X = ";
-        formatString += get_padded_float_format < T > ();
-        formatString += " , Y = ";
-        formatString += get_padded_float_format < T > ();
-        formatString += " , Y` = ";
-        formatString += get_padded_float_format < T > ();
-        formatString += " , Diff = ";
-        formatString += get_padded_float_format < T > ();
+        std::string formatString = "X = %-50.45";
+        formatString += Helpers::getFloatFormat < T > ();
+        formatString += " , Y = %-50.45";
+        formatString += Helpers::getFloatFormat < T > ();
+        formatString += " , Y` = %-50.45";
+        formatString += Helpers::getFloatFormat < T > ();
+        formatString += " , Diff = %-50.45";
+        formatString += Helpers::getFloatFormat < T > ();
         formatString += " \n";
         printf ( formatString.c_str () , x , y , yPred , diff );
-        formatString = get_unpadded_float_format < T > ();
-        formatString += ",";
-        formatString += get_unpadded_float_format < T > ();
-        formatString += ",";
-        formatString += get_unpadded_float_format < T > ();
-        formatString += ",";
-        formatString += get_unpadded_float_format < T > ();
+        formatString = "%-47.45";
+        formatString += Helpers::getFloatFormat < T > ();
+        formatString += ",%-47.45";
+        formatString += Helpers::getFloatFormat < T > ();
+        formatString += ",%-47.45";
+        formatString += Helpers::getFloatFormat < T > ();
+        formatString += ",%-47.45";
+        formatString += Helpers::getFloatFormat < T > ();
         formatString += "\n";
-        out << string_format ( formatString , x , y , yPred , diff );
+        out << Helpers::string_format ( formatString , x , y , yPred , diff );
     }
     out.flush ();
     out.close ();
@@ -140,82 +190,10 @@ void printCoefficients ( std::vector < T > coefficients , const std::string &fil
     std::ofstream out ( filePath , std::ios::trunc | std::ios::out );
     for ( std::size_t i = 0; i < coefficients.size (); ++i )
     {
-        out << string_format ( get_unpadded_float_format < T > () + "\n" , coefficients[ i ] );
+        out << Helpers::string_format ( "%.45" + Helpers::getFloatFormat < T > () + "\n" , coefficients[ i ] );
     }
     out.flush ();
     out.close ();
     printf ( "\n" );
-}
-template < class T >
-T parse_string_to_float_type ( std::string &toParse )
-{
-    return std::stold ( toParse );
-}
-template <>
-float parse_string_to_float_type < float > ( std::string &toParse )
-{
-    return std::stof ( toParse );
-}
-template <>
-double parse_string_to_float_type < double > ( std::string &toParse )
-{
-    return std::stod ( toParse );
-}
-template <>
-long double parse_string_to_float_type < long double > ( std::string &toParse )
-{
-    return std::stold ( toParse );
-}
-template < class T >
-std::string get_padded_float_format ()
-{
-    return "%-25.20Lf";
-}
-template <>
-std::string get_padded_float_format < float > ()
-{
-    return "%-25.20f";
-}
-template <>
-std::string get_padded_float_format < double > ()
-{
-    return "%-25.20lf";
-}
-template <>
-std::string get_padded_float_format < long double > ()
-{
-    return "%-25.20Lf";
-}
-template < class T >
-std::string get_unpadded_float_format ()
-{
-    return "%.45Lf";
-}
-template <>
-std::string get_unpadded_float_format < float > ()
-{
-    return "%.45f";
-}
-template <>
-std::string get_unpadded_float_format < double > ()
-{
-    return "%.45lf";
-}
-template <>
-std::string get_unpadded_float_format < long double > ()
-{
-    return "%.45Lf";
-}
-template < typename ... Args >
-std::string string_format ( const std::string &format , Args ... args )
-{
-    int size = snprintf ( nullptr , 0 , format.c_str () , args ... ) + 1; // Extra space for '\0'
-    if ( size <= 0 )
-    {
-        throw std::runtime_error ( "Error during formatting." );
-    }
-    std::unique_ptr < char[] > buf ( new char[size] );
-    snprintf ( buf.get () , static_cast<std::size_t>(size) , format.c_str () , args ... );
-    return std::string ( buf.get () , buf.get () + size - 1 ); // We don't want the '\0' inside
 }
 #endif //COURSEWORKONE_HELPERS_HPP
