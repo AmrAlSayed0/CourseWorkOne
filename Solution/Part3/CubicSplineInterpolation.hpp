@@ -91,26 +91,37 @@ namespace Solution
                 const T yip1 = y[ i + 2 ];
                 if ( i != 0 )
                 {
+                    /** ( 𝑥ᵢ - 𝑥ᵢ₋₁ )𝑓″( 𝑥ᵢ₋₁ ) */
                     aCoeffs[ i ] = xi - xim1;
                 }
                 if ( i != matSize - 1 )
                 {
+                    /** ( 𝑥ᵢ₊₁ - 𝑥ᵢ )𝑓″( 𝑥ᵢ₊₁ ) */
                     cCoeffs[ i ] = xip1 - xi;
                 }
+                /** 2 ( 𝑥ᵢ₊₁ - 𝑥ᵢ₋₁ ) */
                 bCoeffs[ i ] = 2 * ( xip1 - xim1 );
+                /** -6 ( ( ( 𝑦ᵢ - 𝑦ᵢ₋₁ ) / ( 𝑥ᵢ - 𝑥ᵢ₋₁ ) ) - ( ( 𝑦ᵢ₊₁ - 𝑦ᵢ ) / ( 𝑥ᵢ₊₁ - 𝑥ᵢ ) ) ) */
                 dCoeffs[ i ] = ( -6 ) * ( ( ( yi - yim1 ) / ( xi - xim1 ) ) - ( ( yip1 - yi ) / ( xip1 - xi ) ) );
             }
             this->xCoeffs.resize ( matSize );
+            /** Thomas' algorithm */
             T w;
             for ( std::size_t i = 1; i < matSize; ++i )
             {
+                /** w = 𝑎ᵢ / 𝑏ᵢ₋₁ */
                 w = aCoeffs[ i ] / bCoeffs[ i - 1 ];
+                /** 𝑏ᵢ ≔ 𝑏ᵢ - 𝑤𝑐ᵢ₋₁ */
                 bCoeffs[ i ] = bCoeffs[ i ] - w * cCoeffs[ i - 1 ];
+                /** 𝑑ᵢ ≔ 𝑑ᵢ - 𝑤𝑑ᵢ₋₁ */
                 dCoeffs[ i ] = dCoeffs[ i ] - w * dCoeffs[ i - 1 ];
             }
+            /** Back Substitution */
+            /** 𝑥ₙ = 𝑑ₙ / 𝑏ₙ */
             this->xCoeffs[ matSize - 1 ] = dCoeffs[ matSize - 1 ] / bCoeffs[ matSize - 1 ];
             for ( int i = ( ( int ) matSize ) - 2; i >= 0; i-- )
             {
+                /** 𝑥ᵢ = 𝑑ᵢ − 𝑐ᵢ𝑥ᵢ₊₁ / 𝑏ᵢ */
                 this->xCoeffs[ i ] = ( dCoeffs[ i ] - cCoeffs[ i ] * this->xCoeffs[ i + 1 ] ) / bCoeffs[ i ];
             }
             this->xValues.clear ();

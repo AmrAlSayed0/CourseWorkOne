@@ -4,19 +4,21 @@
  *  Created on: Dec 13, 2020
  *      Author: asamir
  */
-#include <bits/stdc++.h>
 #include<iostream>
-#include "GaussElimination.h"
+#include <iomanip>
+#include <cmath>
+#include "GaussElimination.hpp"
 using namespace std;
-GaussElimination::GaussElimination(int d) {
-	// TODO Auto-generated constructor stub
-	this->nd = d;
-	this->result = new float[d];
-	this->_matrix = new float*[this->nd];
+GaussElimination::GaussElimination ( int d )
+{
+    // TODO Auto-generated constructor stub
+    this->nd = d;
+    this->result = new float[d];
+    this->_matrix = new float * [this->nd];
 }
-
-GaussElimination::~GaussElimination() {
-	delete this->_matrix;
+GaussElimination::~GaussElimination ()
+{
+    delete this->_matrix;
 }
 /**
  * input the elements of array
@@ -99,19 +101,24 @@ void GaussElimination::back_substitution() {
 	}
 }
 
-float** GaussElimination::lower() {
-	float **omatrix = 0;
-	omatrix = new float*[this->nd];
-
-	for (int i = 0; i < this->nd; i++) {
-		omatrix[i] = new float[this->nd];
-
-		for (int j = 0; j < this->nd; j++) {
-			if (i < j) {
-				omatrix[i][j] = 0;
-			} else
-				omatrix[i][j] = this->_matrix[i][j];
-		}
+float** GaussElimination::lower()
+{
+    float ** omatrix;
+    omatrix = new float * [this->nd];
+    for ( int i = 0; i < this->nd; i++ )
+    {
+        omatrix[ i ] = new float[this->nd];
+        for ( int j = 0; j < this->nd; j++ )
+        {
+            if ( i < j )
+            {
+                omatrix[ i ][ j ] = 0;
+            }
+            else
+            {
+                omatrix[ i ][ j ] = this->_matrix[ i ][ j ];
+            }
+        }
 	}
 	return omatrix;
 }

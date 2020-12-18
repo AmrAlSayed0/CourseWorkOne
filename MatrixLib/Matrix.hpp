@@ -20,12 +20,6 @@ namespace Core
     {
     private:
         /**
-         * @brief Swaps the contents of one matrix with the contents of another.
-         * @param first The first matrix to swap.
-         * @param second The second matrix to swap
-         */
-        static void swap ( Matrix < T > &first , Matrix < T > &second );
-        /**
          * @brief Number of rows in the matrix. If this is 0, the number of columns must be 0.
          */
         std::size_t _numOfRows = 0;
@@ -292,13 +286,6 @@ namespace Core
 namespace Core
 {
     template < class T >
-    void Matrix < T >::swap ( Matrix < T > &first , Matrix < T > &second )
-    {
-        std::swap ( ( std::size_t & ) first._numOfRows , ( std::size_t & ) second._numOfRows );
-        std::swap ( ( std::size_t & ) first._numOfColumns , ( std::size_t & ) second._numOfColumns );
-        std::swap ( ( T *& ) first._data , ( T *& ) second._data );
-    }
-    template < class T >
     void Matrix < T >::fixSizeIfZero ()
     {
         if ( this->_numOfRows == 0 || this->_numOfColumns == 0 )
@@ -531,7 +518,7 @@ namespace Core
         {
             for ( std::size_t j = 1; j < i; j++ )
             {
-                if ( std::fabs ( this->getElementInner ( i , j ) ) > std::numeric_limits < T >::epsilon () )
+                if ( std::fabs ( ( T ) this->at ( i , j ) ) > std::numeric_limits < T >::epsilon () )
                 {
                     return false;
                 }
@@ -688,7 +675,7 @@ namespace Core
             for ( std::size_t j = 1; j <= this->_numOfColumns; j++ )
             {
                 T &toModify = this->at ( i , j );
-                toModify = toModify + right.getElementInner ( i , j );
+                toModify = toModify + ( T ) right.at ( i , j );
             }
         }
         return *this;
@@ -705,7 +692,7 @@ namespace Core
             for ( std::size_t j = 1; j <= this->_numOfColumns; j++ )
             {
                 T &toModify = this->at ( i , j );
-                toModify = toModify - right.getElementInner ( i , j );
+                toModify = toModify - ( T ) right.at ( i , j );
             }
         }
         return *this;
@@ -724,7 +711,7 @@ namespace Core
             {
                 for ( std::size_t k = 1; k <= this->_numOfColumns; ++k )
                 {
-                    temp.at ( i , j ) += ( this->at ( i , k ) * right.getElementInner ( k , j ) );
+                    temp.at ( i , j ) += ( this->at ( i , k ) * ( T ) right.at ( k , j ) );
                 }
             }
         }

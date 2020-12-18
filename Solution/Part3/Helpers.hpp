@@ -12,7 +12,7 @@
 //**********************************************************************//
 
 template < class T >
-void read_x_and_y_values ( const std::string &path , std::vector < T > &xValues , std::vector < T > &yValues );
+void readXAndYvalues ( const std::string &path , std::vector < T > &xValues , std::vector < T > &yValues );
 template < class T >
 T parse_string_to_float_type ( std::string &toParse );
 template <>
@@ -24,9 +24,9 @@ long double parse_string_to_float_type ( std::string &toParse );
 template < class T >
 void print_matrix ( Core::Matrix < T > &mat );
 template < class T >
-void print_prediction_result ( const std::vector < T > &xValues , const std::vector < T > &yValues , const std::vector < T > &predictedYValues , const std::string &outputFilePath );
+void printPredictionResult ( const std::vector < T > &xValues , const std::vector < T > &yValues , const std::vector < T > &predictedYValues , const std::string &outputFilePath );
 template < class T >
-void print_coefficients ( std::vector < T > coefficients , const std::string &filePath );
+void printCoefficients ( std::vector < T > coefficients , const std::string &filePath );
 template < class T >
 std::string get_padded_float_format ();
 template <>
@@ -52,7 +52,7 @@ std::string string_format ( const std::string &format , Args ... args );
 //**********************************************************************//
 
 template < class T >
-void read_x_and_y_values ( const std::string &path , std::vector < T > &xValues , std::vector < T > &yValues )
+void readXAndYvalues ( const std::string &path , std::vector < T > &xValues , std::vector < T > &yValues )
 {
     std::fstream firstDataStream;
     firstDataStream.open ( path , std::ios::in );
@@ -99,7 +99,7 @@ void print_matrix ( Core::Matrix < T > &mat )
     printf ( "\n" );
 }
 template < class T >
-void print_prediction_result ( const std::vector < T > &xValues , const std::vector < T > &yValues , const std::vector < T > &predictedYValues , const std::string &outputFilePath )
+void printPredictionResult ( const std::vector < T > &xValues , const std::vector < T > &yValues , const std::vector < T > &predictedYValues , const std::string &outputFilePath )
 {
     std::ofstream out ( outputFilePath , std::ios::trunc | std::ios::out );
     printf ( "X,Y,Y',Diff\n" );
@@ -135,7 +135,7 @@ void print_prediction_result ( const std::vector < T > &xValues , const std::vec
     printf ( "\n" );
 }
 template < class T >
-void print_coefficients ( std::vector < T > coefficients , const std::string &filePath )
+void printCoefficients ( std::vector < T > coefficients , const std::string &filePath )
 {
     std::ofstream out ( filePath , std::ios::trunc | std::ios::out );
     for ( std::size_t i = 0; i < coefficients.size (); ++i )
