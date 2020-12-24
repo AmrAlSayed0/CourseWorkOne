@@ -42,10 +42,10 @@ void presentPart3 ()
     /** Reading both data sets */
     readXAndYValues < float_type > ( R"(..\datasets\part_3\3_dataset_1.csv)" , d1Xs , d1Ys );
     readXAndYValues < float_type > ( R"(..\datasets\part_3\3_dataset_2.csv)" , d2Xs , d2Ys );
-    /** Get test X values based on the original x values. Will divide the range into 100 numbers. */
+    /** Get test X values based on the original x values. Will divide the range into 500 numbers. */
     std::vector < float_type > testD1Xs = getTestXs ( d1Xs );
     std::vector < float_type > testD2Xs = getTestXs ( d2Xs );
-    /** Doing Newtown interpolation first */
+    /** Doing Newton interpolation first */
     auto d1NewtonInterpolation = Solution::Part3::NewtonInterpolation < float_type > ();
     /** Fitting the data */
     d1NewtonInterpolation.fit ( d1Xs , d1Ys );
@@ -83,6 +83,7 @@ void presentPart3 ()
     printPredictionResult ( d2Xs , d2Ys , d2CuPredYs , R"(..\datasets\part_3\Cube_Pred_Points_2.csv)" );
     printPredictionResult ( testD2Xs , d2CuPredTestYs , d2CuPredTestYs , R"(..\datasets\part_3\Cube_Test_Pred_Points_2.csv)" );
     printCoefficients ( d2CubicSplineInterpolation.getCoefficients () , R"(..\datasets\part_3\Cube_Coeff_2.csv)" );
+    std::system ( R"(python.exe "..\Plot.py")" );
 }
 
 

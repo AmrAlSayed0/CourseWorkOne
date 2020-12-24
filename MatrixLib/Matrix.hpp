@@ -16,7 +16,8 @@ namespace Core
      * @brief Represents a matrix of arbitrary size.
      * @tparam T A floating point type to be used for calculations.
      */
-    template < class T > class Matrix
+    template < class T >
+    class Matrix
     {
     private:
         /**
@@ -62,7 +63,7 @@ namespace Core
          * @param B The matrix to augment with.
          * @return A new matrix that is the result of the augmentation.
          */
-        static Matrix < T > augment ( const Matrix < T > &A , const Matrix < T > &B );
+        static Matrix < T > augment ( const Matrix < T > & A , const Matrix < T > & B );
         /**
          * @brief Constructs a 0 x 0 matrix.
          */
@@ -98,12 +99,12 @@ namespace Core
          * @brief Copies the provided matrix into this one.
          * @param other The matrix to copy.
          */
-        Matrix ( const Matrix < T > &other );
+        Matrix ( const Matrix < T > & other );
         /**
          * @brief Moves the provided matrix into this one. The other matrix is no longer usable.
          * @param other The matrix to move.
          */
-        Matrix ( Matrix < T > &&other ) noexcept;
+        Matrix ( Matrix < T > && other ) noexcept;
         /**
          * @brief Cleans the matrix and de-allocates the storage.
          */
@@ -113,13 +114,13 @@ namespace Core
          * @param rhs The rhs matrix that should be copied into this one.
          * @return A reference to the new copied into matrix
          */
-        Matrix < T > &operator = ( const Matrix < T > &rhs );
+        Matrix < T > & operator = ( const Matrix < T > & rhs );
         /**
          * @brief Moves the right matrix into the left one. The right matrix is no longer usable after the assignment.
          * @param rhs The other matrix that should be moved into this one.
          * @return A reference to the new moved into matrix
          */
-        Matrix < T > &operator = ( Matrix < T > &&rhs ) noexcept;
+        Matrix < T > & operator = ( Matrix < T > && rhs ) noexcept;
         /**
          * @brief Gets the number of rows in the matrix.
          * @return The number of rows in the matrix.
@@ -146,14 +147,14 @@ namespace Core
          * @param j The column number the element is at. Starting at 1.
          * @return The element at row i and column j.
          */
-        T &at ( std::size_t i , std::size_t j );
+        T & at ( std::size_t i , std::size_t j );
         /**
          * @brief Gets the element at the specified row and column. This method doesn't do any bounds checking. It returns an lvalue reference so it can be assigned directly.
          * @param i The row number the element is at. Starting at 1.
          * @param j The column number the element is at. Starting at 1.
          * @return A reference to the element at row i and column j.
          */
-        T &operator () ( std::size_t i , std::size_t j );
+        T & operator () ( std::size_t i , std::size_t j );
         /**
          * @brief Gets the element at the specified row and column. This method does bound checking and throws std::out_of_range exception if i or j is out of bounds.
          * @param i The row number the element is at. Starting at 1.
@@ -229,31 +230,31 @@ namespace Core
          * @param right The matrix to add.
          * @return The modified matrix.
          */
-        Matrix < T > &operator += ( const Matrix < T > &right );
+        Matrix < T > & operator += ( const Matrix < T > & right );
         /**
          * @brief Subtracts the right matrix from this one. Must be of the same size.
          * @param right The matrix to subtract.
          * @return The modified matrix.
          */
-        Matrix < T > &operator -= ( const Matrix < T > &right );
+        Matrix < T > & operator -= ( const Matrix < T > & right );
         /**
          * @brief Multiplies the right matrix with this one. This is a dot multiplication operation not an element-wise operation. The number of columns of the left matrix must be equal to the number of rows of the right matrix.
          * @param right The matrix to multiply by.
          * @return The modified matrix.
          */
-        Matrix < T > &operator *= ( const Matrix < T > &right );
+        Matrix < T > & operator *= ( const Matrix < T > & right );
         /**
          * @brief Multiplies each element of the matrix with the given value.
          * @param right The value to multiply each element with.
          * @return The multiplied matrix.
          */
-        Matrix < T > &operator *= ( const T &right );
+        Matrix < T > & operator *= ( const T & right );
         /**
          * @brief Divides each element of the matrix with the given value.
          * @param right The value to divide by.
          * @return The divided matrix.
          */
-        Matrix < T > &operator /= ( const T &right );
+        Matrix < T > & operator /= ( const T & right );
         /**
          * @brief Transposes the matrix in-place.
          */
@@ -268,19 +269,19 @@ namespace Core
          * @brief Transforms each element in the matrix using the provided function.
          * @param func The function to apply to each element.
          */
-        void each ( const std::function < T ( T ) > &func );
+        void each ( const std::function < T ( T ) > & func );
         /**
          * @brief Transforms each element in the specified row using the provided function.
          * @param i The row to apply the function on.
          * @param func The function to apply to each row element.
          */
-        void eachInRow ( std::size_t i , const std::function < T ( T ) > &func );
+        void eachInRow ( std::size_t i , const std::function < T ( T ) > & func );
         /**
          * @brief Transforms each element in the specified row using the provided function.
          * @param j The row to apply the function on.
          * @param func The function to apply to each row element.
          */
-        void eachInColumn ( std::size_t j , const std::function < T ( T ) > &func );
+        void eachInColumn ( std::size_t j , const std::function < T ( T ) > & func );
     };
 }
 namespace Core
@@ -329,7 +330,7 @@ namespace Core
         return identityResult;
     }
     template < class T >
-    Matrix < T > Matrix < T >::augment ( const Matrix < T > &A , const Matrix < T > &B )
+    Matrix < T > Matrix < T >::augment ( const Matrix < T > & A , const Matrix < T > & B )
     {
         if ( A._numOfRows != B._numOfRows )
         {
@@ -354,18 +355,18 @@ namespace Core
     }
     template < class T >
     Matrix < T >::Matrix ()
-            : Matrix ( 0 , 0 )
+        : Matrix ( 0 , 0 )
     {
     }
     template < class T >
     Matrix < T >::Matrix ( const std::size_t numOfRows , const std::size_t numOfColumns )
-            : Matrix ( numOfRows , numOfColumns , ( T const ) 0 )
+        : Matrix ( numOfRows , numOfColumns , ( T const ) 0 )
     {
     }
     template < class T >
     Matrix < T >::Matrix ( const std::size_t numOfRows , const std::size_t numOfColumns , T const value )
-            : _numOfRows ( numOfRows ) ,
-              _numOfColumns ( numOfColumns )
+        : _numOfRows ( numOfRows ) ,
+          _numOfColumns ( numOfColumns )
     {
         this->fixSizeIfZero ();
         this->_data = new T[numOfRows * numOfColumns] {};
@@ -373,8 +374,8 @@ namespace Core
     }
     template < class T >
     Matrix < T >::Matrix ( const std::size_t numOfRows , const std::size_t numOfColumns , T const * const data )
-            : _numOfRows ( numOfRows ) ,
-              _numOfColumns ( numOfColumns )
+        : _numOfRows ( numOfRows ) ,
+          _numOfColumns ( numOfColumns )
     {
         this->fixSizeIfZero ();
         _data = new T[numOfRows * numOfColumns] {};
@@ -388,8 +389,8 @@ namespace Core
     }
     template < class T >
     Matrix < T >::Matrix ( const std::size_t numOfRows , const std::size_t numOfColumns , T const * const * const data )
-            : _numOfRows ( numOfRows ) ,
-              _numOfColumns ( numOfColumns )
+        : _numOfRows ( numOfRows ) ,
+          _numOfColumns ( numOfColumns )
     {
         this->fixSizeIfZero ();
         for ( std::size_t i = 0; i < this->_numOfRows; i++ )
@@ -401,18 +402,18 @@ namespace Core
         }
     }
     template < class T >
-    Matrix < T >::Matrix ( const Matrix < T > &other )
-            : _numOfRows ( other._numOfRows ) ,
-              _numOfColumns ( other._numOfColumns ) ,
-              _data ( new T[other._numOfRows * other._numOfColumns] ) //Copy Constructor
+    Matrix < T >::Matrix ( const Matrix < T > & other )
+        : _numOfRows ( other._numOfRows ) ,
+          _numOfColumns ( other._numOfColumns ) ,
+          _data ( new T[other._numOfRows * other._numOfColumns] ) //Copy Constructor
     {
         std::memcpy ( ( void * ) this->_data , ( const void * ) other._data , this->_numOfRows * this->_numOfColumns * sizeof ( T ) );
     }
     template < class T >
-    Matrix < T >::Matrix ( Matrix < T > &&other ) noexcept
-            : _numOfRows ( std::exchange ( ( std::size_t & ) other._numOfRows , ( std::size_t && ) 0 ) ) ,
-              _numOfColumns ( std::exchange ( ( std::size_t & ) other._numOfColumns , ( std::size_t && ) 0 ) ) ,
-              _data ( std::exchange < T * , T * > ( ( T *& ) other._data , nullptr ) ) //Move Constructor
+    Matrix < T >::Matrix ( Matrix < T > && other ) noexcept
+        : _numOfRows ( std::exchange ( ( std::size_t & ) other._numOfRows , ( std::size_t && ) 0 ) ) ,
+          _numOfColumns ( std::exchange ( ( std::size_t & ) other._numOfColumns , ( std::size_t && ) 0 ) ) ,
+          _data ( std::exchange < T * , T * > ( ( T *& ) other._data , nullptr ) ) //Move Constructor
     {
     }
     template < class T >
@@ -423,7 +424,7 @@ namespace Core
         delete[] this->_data;
     }
     template < class T >
-    Matrix < T > &Matrix < T >::operator = ( const Matrix < T > &rhs ) // Copy Assignment
+    Matrix < T > & Matrix < T >::operator = ( const Matrix < T > & rhs ) // Copy Assignment
     {
         if ( this == &rhs )
         {
@@ -437,7 +438,7 @@ namespace Core
         return *this;
     }
     template < class T >
-    Matrix < T > &Matrix < T >::operator = ( Matrix < T > &&rhs ) noexcept // Move Assignment
+    Matrix < T > & Matrix < T >::operator = ( Matrix < T > && rhs ) noexcept // Move Assignment
     {
         this->_numOfRows = std::exchange ( ( std::size_t & ) rhs._numOfRows , ( std::size_t && ) 0 );
         this->_numOfColumns = std::exchange ( ( std::size_t & ) rhs._numOfColumns , ( std::size_t && ) 0 );
@@ -471,12 +472,12 @@ namespace Core
         }
     }
     template < class T >
-    T &Matrix < T >::at ( std::size_t i , std::size_t j )
+    T & Matrix < T >::at ( std::size_t i , std::size_t j )
     {
         return this->_data[ ( ( i - 1 ) * this->_numOfColumns ) + ( j - 1 ) ];
     }
     template < class T >
-    T &Matrix < T >::operator () ( std::size_t i , std::size_t j )
+    T & Matrix < T >::operator () ( std::size_t i , std::size_t j )
     {
         return this->at ( i , j );
     }
@@ -664,7 +665,7 @@ namespace Core
         }
     }
     template < class T >
-    Matrix < T > &Matrix < T >::operator += ( const Matrix < T > &right )
+    Matrix < T > & Matrix < T >::operator += ( const Matrix < T > & right )
     {
         if ( this->_numOfRows != right._numOfRows || this->_numOfColumns != right._numOfRows )
         {
@@ -674,14 +675,14 @@ namespace Core
         {
             for ( std::size_t j = 1; j <= this->_numOfColumns; j++ )
             {
-                T &toModify = this->at ( i , j );
+                T & toModify = this->at ( i , j );
                 toModify = toModify + ( T ) right.at ( i , j );
             }
         }
         return *this;
     }
     template < class T >
-    Matrix < T > &Matrix < T >::operator -= ( const Matrix < T > &right )
+    Matrix < T > & Matrix < T >::operator -= ( const Matrix < T > & right )
     {
         if ( this->_numOfRows != right._numOfRows || this->_numOfColumns != right._numOfRows )
         {
@@ -691,14 +692,14 @@ namespace Core
         {
             for ( std::size_t j = 1; j <= this->_numOfColumns; j++ )
             {
-                T &toModify = this->at ( i , j );
+                T & toModify = this->at ( i , j );
                 toModify = toModify - ( T ) right.at ( i , j );
             }
         }
         return *this;
     }
     template < class T >
-    Matrix < T > &Matrix < T >::operator *= ( const Matrix < T > &right )
+    Matrix < T > & Matrix < T >::operator *= ( const Matrix < T > & right )
     {
         if ( this->_numOfColumns != right._numOfRows )
         {
@@ -718,7 +719,7 @@ namespace Core
         return ( *this = temp );
     }
     template < class T >
-    Matrix < T > &Matrix < T >::operator *= ( const T &right )
+    Matrix < T > & Matrix < T >::operator *= ( const T & right )
     {
         for ( std::size_t i = 1; i <= this->_numOfRows; ++i )
         {
@@ -730,7 +731,7 @@ namespace Core
         return *this;
     }
     template < class T >
-    Matrix < T > &Matrix < T >::operator /= ( const T &right )
+    Matrix < T > & Matrix < T >::operator /= ( const T & right )
     {
         for ( std::size_t i = 1; i <= this->_numOfRows; ++i )
         {
@@ -742,66 +743,66 @@ namespace Core
         return *this;
     }
     template < class T >
-    void Matrix < T >::each ( const std::function < T ( T ) > &func )
+    void Matrix < T >::each ( const std::function < T ( T ) > & func )
     {
         for ( std::size_t i = 1; i <= this->_numOfRows; i++ )
         {
             for ( std::size_t j = 1; j <= this->_numOfColumns; j++ )
             {
-                T &toModify = this->at ( i , j );
+                T & toModify = this->at ( i , j );
                 toModify = func ( toModify );
             }
         }
     }
     template < class T >
-    void Matrix < T >::eachInRow ( std::size_t i , const std::function < T ( T ) > &func )
+    void Matrix < T >::eachInRow ( std::size_t i , const std::function < T ( T ) > & func )
     {
         for ( std::size_t j = 1; j <= this->_numOfColumns; ++j )
         {
-            T &toModify = this->at ( i , j );
+            T & toModify = this->at ( i , j );
             toModify = func ( toModify );
         }
     }
     template < class T >
-    void Matrix < T >::eachInColumn ( std::size_t j , const std::function < T ( T ) > &func )
+    void Matrix < T >::eachInColumn ( std::size_t j , const std::function < T ( T ) > & func )
     {
         for ( std::size_t i = 1; i <= this->_numOfRows; ++i )
         {
-            T &toModify = this->at ( i , j );
+            T & toModify = this->at ( i , j );
             toModify = func ( toModify );
         }
     }
     template < class T >
-    Matrix < T > operator + ( const Matrix < T > &left , const Matrix < T > &right )
+    Matrix < T > operator + ( const Matrix < T > & left , const Matrix < T > & right )
     {
         Matrix < T > temp ( left );
         return ( temp += right );
     }
     template < class T >
-    Matrix < T > operator - ( const Matrix < T > &left , const Matrix < T > &right )
+    Matrix < T > operator - ( const Matrix < T > & left , const Matrix < T > & right )
     {
         Matrix < T > temp ( left );
         return ( temp -= right );
     }
     template < class T >
-    Matrix < T > operator * ( const Matrix < T > &left , const Matrix < T > &right )
+    Matrix < T > operator * ( const Matrix < T > & left , const Matrix < T > & right )
     {
         Matrix < T > temp ( left );
         return ( temp *= right );
     }
     template < class T >
-    Matrix < T > operator * ( const Matrix < T > &left , const T &right )
+    Matrix < T > operator * ( const Matrix < T > & left , const T & right )
     {
         Matrix < T > temp ( left );
         return ( temp *= right );
     }
     template < class T >
-    Matrix < T > operator * ( const T &left , const Matrix < T > &right )
+    Matrix < T > operator * ( const T & left , const Matrix < T > & right )
     {
         return ( right * left );
     }
     template < class T >
-    Matrix < T > operator / ( const Matrix < T > &left , const T &right )
+    Matrix < T > operator / ( const Matrix < T > & left , const T & right )
     {
         Matrix < T > temp ( left );
         return ( temp /= right );

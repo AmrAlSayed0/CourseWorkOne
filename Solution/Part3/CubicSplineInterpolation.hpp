@@ -7,7 +7,8 @@ namespace Solution
 {
     namespace Part3
     {
-        template < class T > class CubicSplineInterpolation
+        template < class T >
+        class CubicSplineInterpolation
         {
         private:
             bool isFit = false;
@@ -18,8 +19,8 @@ namespace Solution
             T interpolateInner ( T x );
         public:
             CubicSplineInterpolation ();
-            void fit ( const std::vector < T > &x , const std::vector < T > &y );
-            std::vector < T > interpolate ( const std::vector < T > &x );
+            void fit ( const std::vector < T > & x , const std::vector < T > & y );
+            std::vector < T > interpolate ( const std::vector < T > & x );
             std::vector < T > getCoefficients ();
         };
         template < class T >
@@ -85,7 +86,7 @@ namespace Solution
             this->xCoeffs = std::vector < T > ();
         }
         template < class T >
-        void CubicSplineInterpolation < T >::fit ( const std::vector < T > &x , const std::vector < T > &y )
+        void CubicSplineInterpolation < T >::fit ( const std::vector < T > & x , const std::vector < T > & y )
         {
             if ( x.size () != y.size () )
             {
@@ -155,7 +156,7 @@ namespace Solution
             this->isFit = true;
         }
         template < class T >
-        std::vector < T > CubicSplineInterpolation < T >::interpolate ( const std::vector < T > &x )
+        std::vector < T > CubicSplineInterpolation < T >::interpolate ( const std::vector < T > & x )
         {
             if ( !this->isFit )
             {
@@ -172,7 +173,10 @@ namespace Solution
         template < class T >
         std::vector < T > CubicSplineInterpolation < T >::getCoefficients ()
         {
-            return this->xCoeffs;
+            std::vector < T > result ( this->xCoeffs );
+            result.insert ( result.begin () , ( T && ) 0 );
+            result.push_back ( ( T ) 0 );
+            return result;
         }
     }
 }

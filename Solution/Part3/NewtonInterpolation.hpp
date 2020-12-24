@@ -10,7 +10,8 @@ namespace Solution
         /**
          * @brief A class used to do Newton's Polynomial Interpolation over a series of points.
          */
-        template < class T > class NewtonInterpolation
+        template < class T >
+        class NewtonInterpolation
         {
         private:
             /**
@@ -41,13 +42,13 @@ namespace Solution
              * @param x The X values of the points to fit.
              * @param y The Y values of the pints to fit.
              */
-            void fit ( const std::vector < T > &x , const std::vector < T > &y );
+            void fit ( const std::vector < T > & x , const std::vector < T > & y );
             /**
              * @brief Calculates interpolated values for the supplied X values. The method "fit" MUST be called before calling this method.
              * @param x The X values to calculate y values for.
              * @return
              */
-            std::vector < T > interpolate ( const std::vector < T > &x );
+            std::vector < T > interpolate ( const std::vector < T > & x );
             /**
              * @brief Get the values of the bᵢ coefficients after the fit.
              * @return The values of the bᵢ coefficients. Returns an empty vector if "fit" was never called.
@@ -82,7 +83,7 @@ namespace Solution
             return result;
         }
         template < class T >
-        void NewtonInterpolation < T >::fit ( const std::vector < T > &x , const std::vector < T > &y )
+        void NewtonInterpolation < T >::fit ( const std::vector < T > & x , const std::vector < T > & y )
         {
             /** If the x values are more than the y values, there will be x values that have no corresponding y value. The fit can't be completed */
             if ( x.size () > y.size () )
@@ -125,7 +126,7 @@ namespace Solution
             this->isFit = true;
         }
         template < class T >
-        std::vector < T > NewtonInterpolation < T >::interpolate ( const std::vector < T > &x )
+        std::vector < T > NewtonInterpolation < T >::interpolate ( const std::vector < T > & x )
         {
             if ( !this->isFit )
             {

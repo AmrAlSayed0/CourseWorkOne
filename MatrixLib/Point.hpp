@@ -3,34 +3,35 @@
 #include <utility>
 namespace Core
 {
-    template < class T > struct Point
+    template < class T >
+    struct Point
     {
     public:
         T X;
         T Y;
         Point ( T x , T y );
-        Point ( const Point < T > &other );
-        Point ( Point < T > &&other ) noexcept;
+        Point ( const Point < T > & other );
+        Point ( Point < T > && other ) noexcept;
         ~Point ();
-        Point < T > &operator = ( const Point < T > &rhs );
-        Point < T > &operator = ( Point < T > &&rhs ) noexcept;
+        Point < T > & operator = ( const Point < T > & rhs );
+        Point < T > & operator = ( Point < T > && rhs ) noexcept;
     };
     template < class T >
     Point < T >::Point ( T x , T y )
-            :X ( x ) ,
-             Y ( y )
+        :X ( x ) ,
+         Y ( y )
     {
     }
     template < class T >
-    Point < T >::Point ( const Point < T > &other )
-            :X ( other.X ) ,
-             Y ( other.Y )
+    Point < T >::Point ( const Point < T > & other )
+        :X ( other.X ) ,
+         Y ( other.Y )
     {
     }
     template < class T >
-    Point < T >::Point ( Point < T > &&other ) noexcept
-            :X ( std::exchange ( ( T & ) other.X , ( T && ) 0 ) ) ,
-             Y ( std::exchange ( ( T & ) other.Y , ( T && ) 0 ) )
+    Point < T >::Point ( Point < T > && other ) noexcept
+        :X ( std::exchange ( ( T & ) other.X , ( T && ) 0 ) ) ,
+         Y ( std::exchange ( ( T & ) other.Y , ( T && ) 0 ) )
     {
     }
     template < class T >
@@ -38,7 +39,7 @@ namespace Core
     {
     }
     template < class T >
-    Point < T > &Point < T >::operator = ( const Point < T > &rhs )
+    Point < T > & Point < T >::operator = ( const Point < T > & rhs )
     {
         if ( this == &rhs )
         {
@@ -50,7 +51,7 @@ namespace Core
         return *this;
     }
     template < class T >
-    Point < T > &Point < T >::operator = ( Point < T > &&rhs ) noexcept
+    Point < T > & Point < T >::operator = ( Point < T > && rhs ) noexcept
     {
         this->X = std::exchange ( rhs.X , 0 );
         this->Y = std::exchange ( rhs.Y , 0 );
