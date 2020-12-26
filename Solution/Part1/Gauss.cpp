@@ -1,40 +1,59 @@
 /*
- * GaussElimination.cpp
+ * Gauss.cpp
  *
  *  Created on: Dec 13, 2020
  *      Author: asamir
  */
+#include <bits/stdc++.h>
 #include<iostream>
-#include <iomanip>
-#include <cmath>
-#include "GaussElimination.hpp"
+
+#include "Gauss.h"
 using namespace std;
-GaussElimination::GaussElimination ( int d )
-{
-    // TODO Auto-generated constructor stub
-    this->nd = d;
-    this->result = new float[d];
-    this->_matrix = new float * [this->nd];
+Gauss::Gauss() {
+	// TODO Auto-generated constructor stub
+	this->result = NULL;
+	this->_matrix = NULL;
 }
-GaussElimination::~GaussElimination ()
-{
-    delete this->_matrix;
+
+Gauss::~Gauss() {
+	delete this->_matrix;
 }
 /**
  * input the elements of array
  * */
-void GaussElimination::SetSource() {
+void Gauss::SetSource() {
+	int n = 0;
 
-	int determinant,determinant2 ;
+	cout << "\n Enter the no. of equations\n";
+	cin >> n;                //input the no. of equations
+	this->nd = n;
+
+	float **f = new float*[this->nd];
+
 	for (int i = 0; i < this->nd; i++) {
 
-		cout << "enter row number " << i  << endl;
+		cout << "\n Enter row number " << i << endl;
 
-		this->_matrix[i] = new float[this->nd + 1];
+		f[i] = new float[this->nd + 1];
 
 		for (int j = 0; j <= nd; j++)
-			cin >> _matrix[i][j];
+			cin >> f[i][j];
 	}
+
+	this->ImportSource(f,n);
+
+}
+/**
+ * input the elements of array
+ * */
+void Gauss::ImportSource(float **f,int len) {
+
+	this->_matrix = f;
+	this->nd = len ;
+	this->result = new float[this->nd];
+
+	int determinant, determinant2;
+
 	float **tmp = this->lower();
 
 	determinant = this->determinantOfMatrix(tmp);
@@ -43,18 +62,82 @@ void GaussElimination::SetSource() {
 	int fixed_number = 3;
 	for (int i = 0; i < this->nd; i++) {
 		for (int j = 0; j < this->nd; j++) {
-			tmp[i][j] = tmp[i][j]*fixed_number;
+			tmp[i][j] = tmp[i][j] * fixed_number;
 		}
 	}
+
 	determinant2 = this->determinantOfMatrix(tmp);
 	//cout << determinant2 << endl;
 
 	this->valid_solution = (determinant == determinant2);
 
+}
+
+float* Gauss::ApplySeidel(int interation) {
+
+	this->result = new float[this->nd];
+	//int values with zeros
+	for (int i = 0; i < this->nd; i++) {
+		this->result[i] = 0;
+	}
+
+	for (int i = 0; i < interation; i++) {
+		this->Seidel_Core();
+		if (this->debug_mode) {
+			cout << "iteration " << i << endl;
+			for (int ii = 0; ii < this->nd; ii++)
+				cout << this->result[ii] << endl;
+		}
+	}
+	// returning our updated solution
+	return this->result;
+}
+
+float* Gauss::Elimination_Core() {
+
+	this->Apply_Pivotisation();
+	if (this->debug_mode) {
+		cout
+				<< "\n=========================Pivotisation result=========================\n";
+
+		this->Print_Matrix(this->_matrix);
+
+	}
+
+	this->Perform_Elimination();
+	if (this->debug_mode) {
+		cout
+				<< "\n============================Perform_Elimination======================\n";
+
+		this->Print_Matrix(this->_matrix);
+	}
+
+	this->back_substitution();
+
+	return this->result;
+}
+float* Gauss::Apply_Elimination() {
+	return this->Elimination_Core();
+}
+
+void Gauss::Seidel_Core() {
+
+	// for loop for 3 times as to calculate x, y , z
+	for (int j = 0; j < this->nd; j++) {
+		// temp variable d to store b[j]
+		float d = this->_matrix[j][this->nd];
+
+		// to calculate respective xi, yi, zi
+		for (int i = 0; i < this->nd; i++)
+			if (j != i)
+				d -= this->_matrix[j][i] * this->result[i];
+		// updating the value of our solution
+		this->result[j] = d / this->_matrix[j][j];
+	}
 
 }
 
-void GaussElimination::Apply_Pivotisation() {
+void Gauss::Apply_Pivotisation() {
 	for (int i = 0; i < nd; i++)
 		for (int k = i + 1; k < nd; k++)
 			if (abs(_matrix[i][i]) < abs(_matrix[k][i]))
@@ -64,7 +147,7 @@ void GaussElimination::Apply_Pivotisation() {
 					_matrix[k][j] = temp;
 				}
 }
-void GaussElimination::Print_Matrix(float **m) {
+void Gauss::Print_Matrix(float **m) {
 	cout << "----------------------------------\n";
 	for (int i = 0; i < nd; i++) {
 		for (int j = 0; j <= nd; j++)
@@ -74,13 +157,13 @@ void GaussElimination::Print_Matrix(float **m) {
 	cout << "----------------------------------\n";
 }
 
-void GaussElimination::Perform_Elimination() {
+void Gauss::Perform_Elimination() {
 
 	for (int i = 0; i < nd - 1; i++) {
 		for (int k = i + 1; k < nd; k++) {
 			double t = _matrix[k][i] / _matrix[i][i];
-			cout << "\n";
-			cout << "multiply row " << k << " by row " << i << " *" << t
+			if(this->debug_mode)
+			cout << "\nmultiply row " << k << " by row " << i << " *" << t
 					<< "\n";
 			for (int j = 0; j <= nd; j++)
 				_matrix[k][j] = _matrix[k][j] - t * _matrix[i][j]; //make the elements below the pivot elements equal to zero or elimnate the variables
@@ -91,7 +174,7 @@ void GaussElimination::Perform_Elimination() {
 	}
 }
 
-void GaussElimination::back_substitution() {
+void Gauss::back_substitution() {
 	for (int i = nd - 1; i >= 0; i--) { //x is an array whose values correspond to the values of x,y,z..
 		result[i] = _matrix[i][nd]; //make the variable to be calculated equal to the rhs of the last equation
 		for (int j = i + 1; j < nd; j++)
@@ -101,29 +184,24 @@ void GaussElimination::back_substitution() {
 	}
 }
 
-float** GaussElimination::lower()
-{
-    float ** omatrix;
-    omatrix = new float * [this->nd];
-    for ( int i = 0; i < this->nd; i++ )
-    {
-        omatrix[ i ] = new float[this->nd];
-        for ( int j = 0; j < this->nd; j++ )
-        {
-            if ( i < j )
-            {
-                omatrix[ i ][ j ] = 0;
-            }
-            else
-            {
-                omatrix[ i ][ j ] = this->_matrix[ i ][ j ];
-            }
-        }
+float** Gauss::lower() {
+	float **omatrix = 0;
+	omatrix = new float*[this->nd];
+
+	for (int i = 0; i < this->nd; i++) {
+		omatrix[i] = new float[this->nd];
+
+		for (int j = 0; j < this->nd; j++) {
+			if (i < j) {
+				omatrix[i][j] = 0;
+			} else
+				omatrix[i][j] = this->_matrix[i][j];
+		}
 	}
 	return omatrix;
 }
 
-int GaussElimination::determinantOfMatrix(float **mat) {
+int Gauss::determinantOfMatrix(float **mat) {
 	float num1, num2, det = 1, total = 1; // Initialize result
 	int index;
 	// temporary array for storing row
