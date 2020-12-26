@@ -72,7 +72,10 @@ void Gauss::ImportSource(float **f,int len) {
 	this->valid_solution = (determinant == determinant2);
 
 }
-
+/*
+ * public function to apply Gauss seidel method for the given matrix
+ * @number of iteration
+ * */
 float* Gauss::ApplySeidel(int interation) {
 
 	this->result = new float[this->nd];
@@ -92,7 +95,9 @@ float* Gauss::ApplySeidel(int interation) {
 	// returning our updated solution
 	return this->result;
 }
-
+/*
+ * Apply the core logic of gauss elimination method
+ * */
 float* Gauss::Elimination_Core() {
 
 	this->Apply_Pivotisation();
@@ -116,10 +121,15 @@ float* Gauss::Elimination_Core() {
 
 	return this->result;
 }
+/*
+ * public function to Apply Guess elimination method
+ * */
 float* Gauss::Apply_Elimination() {
 	return this->Elimination_Core();
 }
-
+/*
+ * seidel methode core
+ * */
 void Gauss::Seidel_Core() {
 
 	// for loop for 3 times as to calculate x, y , z
@@ -136,7 +146,9 @@ void Gauss::Seidel_Core() {
 	}
 
 }
-
+/*
+ * Apply the Pivotisation phase of the gauss elimination method
+ * */
 void Gauss::Apply_Pivotisation() {
 	for (int i = 0; i < nd; i++)
 		for (int k = i + 1; k < nd; k++)
@@ -147,6 +159,9 @@ void Gauss::Apply_Pivotisation() {
 					_matrix[k][j] = temp;
 				}
 }
+/*
+ * Print a given matrix content
+ * */
 void Gauss::Print_Matrix(float **m) {
 	cout << "----------------------------------\n";
 	for (int i = 0; i < nd; i++) {
@@ -156,7 +171,9 @@ void Gauss::Print_Matrix(float **m) {
 	}
 	cout << "----------------------------------\n";
 }
-
+/*
+ * Apply the elimination phase of Gauss elimination method
+ * */
 void Gauss::Perform_Elimination() {
 
 	for (int i = 0; i < nd - 1; i++) {
@@ -173,7 +190,9 @@ void Gauss::Perform_Elimination() {
 		}
 	}
 }
-
+/*
+ * Apply the back_substitution phase of the Gauss elimination method
+ * */
 void Gauss::back_substitution() {
 	for (int i = nd - 1; i >= 0; i--) { //x is an array whose values correspond to the values of x,y,z..
 		result[i] = _matrix[i][nd]; //make the variable to be calculated equal to the rhs of the last equation
@@ -183,6 +202,9 @@ void Gauss::back_substitution() {
 		result[i] = result[i] / _matrix[i][i]; //now finally divide the rhs by the coefficient of the variable to be calculated
 	}
 }
+/*
+ * Apply the lower triangular matrix
+ * */
 
 float** Gauss::lower() {
 	float **omatrix = 0;
@@ -200,6 +222,9 @@ float** Gauss::lower() {
 	}
 	return omatrix;
 }
+/*
+ * Calculate the determinant Of any given Matrix
+ * */
 
 int Gauss::determinantOfMatrix(float **mat) {
 	float num1, num2, det = 1, total = 1; // Initialize result
