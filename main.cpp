@@ -14,6 +14,9 @@ int main ()
 }
 void presentPart1 ()
 {
+	std::cout << std::fixed;
+    std::cout << std::setprecision(2);
+	
     int option = 0, debug = 0;
 
 	Gauss G;
