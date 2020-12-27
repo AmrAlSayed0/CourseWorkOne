@@ -1,15 +1,17 @@
-#ifndef COURSEWORKONE_NEWTONINTERPOLATION_HPP
-#define COURSEWORKONE_NEWTONINTERPOLATION_HPP
+#ifndef COURSEWORKONE_NEWTONINTERPOLATOR_HPP
+#define COURSEWORKONE_NEWTONINTERPOLATOR_HPP
 #include <vector>
 #include <stdexcept>
 #include <limits>
+#include "Interpolator.hpp"
 namespace Solution::Part3
 {
     /**
      * @brief A class used to do Newton's Polynomial Interpolation over a series of points.
      */
     template < class T >
-    class NewtonInterpolation
+    class NewtonInterpolator
+        : Interpolator < T >
     {
     private:
         /**
@@ -34,35 +36,36 @@ namespace Solution::Part3
         /**
          * @brief Default constructor. Does nothing.
          */
-        NewtonInterpolation ();
+        NewtonInterpolator ();
         /**
          * @brief Used to build a polynomial that fit the supplied points. This should be the first method to use on this class.
          * @param x The X values of the points to fit.
          * @param y The Y values of the pints to fit.
          */
-        void fit ( const std::vector < T > & x , const std::vector < T > & y );
+        void fit ( const std::vector < T > & x , const std::vector < T > & y ) override;
         /**
          * @brief Calculates interpolated values for the supplied X values. The method "fit" MUST be called before calling this method.
          * @param x The X values to calculate y values for.
          * @return
          */
-        std::vector < T > interpolate ( const std::vector < T > & x );
+        std::vector < T > interpolate ( const std::vector < T > & x ) override;
         /**
          * @brief Get the values of the bᵢ coefficients after the fit.
          * @return The values of the bᵢ coefficients. Returns an empty vector if "fit" was never called.
          */
-        std::vector < T > getCoefficients ();
+        std::vector < T > getCoefficients () override;
     };
     template < class T >
-    NewtonInterpolation < T >::NewtonInterpolation ()
+    NewtonInterpolator < T >::NewtonInterpolator ()
     {
         this->xValues = std::vector < T > ();
         this->bValues = std::vector < T > ();
     }
     template < class T >
-    T NewtonInterpolation < T >::interpolateInner ( T x )
+    T NewtonInterpolator < T >::interpolateInner ( T x )
     {
         std::size_t n = this->bValues.size ();
+        /** If it is outside of the range, return the minimum possible value for the used float type */
         if ( x < this->xValues[ 0 ] || x > this->xValues[ n - 1 ] )
         {
             return std::numeric_limits < T >::min ();
@@ -81,7 +84,7 @@ namespace Solution::Part3
         return result;
     }
     template < class T >
-    void NewtonInterpolation < T >::fit ( const std::vector < T > & x , const std::vector < T > & y )
+    void NewtonInterpolator < T >::fit ( const std::vector < T > & x , const std::vector < T > & y )
     {
         /** If the x values are more than the y values, there will be x values that have no corresponding y value. The fit can't be completed */
         if ( x.size () > y.size () )
@@ -124,7 +127,7 @@ namespace Solution::Part3
         this->isFit = true;
     }
     template < class T >
-    std::vector < T > NewtonInterpolation < T >::interpolate ( const std::vector < T > & x )
+    std::vector < T > NewtonInterpolator < T >::interpolate ( const std::vector < T > & x )
     {
         if ( !this->isFit )
         {
@@ -139,9 +142,9 @@ namespace Solution::Part3
         return resultVector;
     }
     template < class T >
-    std::vector < T > NewtonInterpolation < T >::getCoefficients ()
+    std::vector < T > NewtonInterpolator < T >::getCoefficients ()
     {
         return this->bValues;
     }
 }
-#endif //COURSEWORKONE_NEWTONINTERPOLATION_HPP
+#endif //COURSEWORKONE_NEWTONINTERPOLATOR_HPP

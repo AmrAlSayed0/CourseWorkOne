@@ -3,9 +3,9 @@
 #include <vector>
 #include <iomanip>
 #include "Solution/Part1/Gauss.h"
-#include "Solution/Part3/CubicSplineInterpolation.hpp"
+#include "Solution/Part3/CubicSplineInterpolator.hpp"
 #include "Solution/Part3/Helpers.hpp"
-#include "Solution/Part3/NewtonInterpolation.hpp"
+#include "Solution/Part3/NewtonInterpolator.hpp"
 #include "main.hpp"
 int main ()
 {
@@ -60,7 +60,7 @@ void presentPart3 ()
     std::vector < float_type > testD1Xs = getTestXs ( d1Xs );
     std::vector < float_type > testD2Xs = getTestXs ( d2Xs );
     /** Doing Newton interpolation first */
-    auto d1NewtonInterpolation = Solution::Part3::NewtonInterpolation < float_type > ();
+    auto d1NewtonInterpolation = Solution::Part3::NewtonInterpolator < float_type > ();
     /** Fitting the data */
     d1NewtonInterpolation.fit ( d1Xs , d1Ys );
     /** Interpolating the same X values to compare the result */
@@ -71,7 +71,7 @@ void presentPart3 ()
     printPredictionResult ( testD1Xs , d1NewtPredTestYs , d1NewtPredTestYs , R"(..\datasets\part_3\Newt_Test_Pred_Points_1.csv)" );
     printCoefficients ( d1NewtonInterpolation.getCoefficients () , R"(..\datasets\part_3\Newt_Coeff_1.csv)" );
     /** Repeating Newton for the second data set */
-    auto d2NewtonInterpolation = Solution::Part3::NewtonInterpolation < float_type > ();
+    auto d2NewtonInterpolation = Solution::Part3::NewtonInterpolator < float_type > ();
     d2NewtonInterpolation.fit ( d2Xs , d2Ys );
     auto d2NewtPredYs = d2NewtonInterpolation.interpolate ( d2Xs );
     auto d2NewtPredTestYs = d2NewtonInterpolation.interpolate ( testD2Xs );
@@ -79,7 +79,7 @@ void presentPart3 ()
     printPredictionResult ( testD2Xs , d2NewtPredTestYs , d2NewtPredTestYs , R"(..\datasets\part_3\Newt_Test_Pred_Points_2.csv)" );
     printCoefficients ( d2NewtonInterpolation.getCoefficients () , R"(..\datasets\part_3\Newt_Coeff_2.csv)" );
     /** Now using the cubic spline */
-    auto d1CubicSplineInterpolation = Solution::Part3::CubicSplineInterpolation < float_type > ();
+    auto d1CubicSplineInterpolation = Solution::Part3::CubicSplineInterpolator < float_type > ();
     /** Fitting the data */
     d1CubicSplineInterpolation.fit ( d1Xs , d1Ys );
     /** Interpolating the same X values to compare the result */
@@ -90,7 +90,7 @@ void presentPart3 ()
     printPredictionResult ( testD1Xs , d1CuPredTestYs , d1CuPredTestYs , R"(..\datasets\part_3\Cube_Test_Pred_Points_1.csv)" );
     printCoefficients ( d1CubicSplineInterpolation.getCoefficients () , R"(..\datasets\part_3\Cube_Coeff_1.csv)" );
     /** Repeating Cubic for the second data set */
-    auto d2CubicSplineInterpolation = Solution::Part3::CubicSplineInterpolation < float_type > ();
+    auto d2CubicSplineInterpolation = Solution::Part3::CubicSplineInterpolator < float_type > ();
     d2CubicSplineInterpolation.fit ( d2Xs , d2Ys );
     auto d2CuPredYs = d2CubicSplineInterpolation.interpolate ( d2Xs );
     auto d2CuPredTestYs = d2CubicSplineInterpolation.interpolate ( testD2Xs );

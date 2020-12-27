@@ -1,13 +1,15 @@
-#ifndef COURSEWORKONE_CUBICSPLINEINTERPOLATION_HPP
-#define COURSEWORKONE_CUBICSPLINEINTERPOLATION_HPP
+#ifndef COURSEWORKONE_CUBICSPLINEINTERPOLATOR_HPP
+#define COURSEWORKONE_CUBICSPLINEINTERPOLATOR_HPP
 #include <vector>
 #include <stdexcept>
 #include <limits>
 #include <cmath>
+#include "Interpolator.hpp"
 namespace Solution::Part3
 {
     template < class T >
-    class CubicSplineInterpolation
+    class CubicSplineInterpolator
+        : Solution::Part3::Interpolator < T >
     {
     private:
         bool isFit = false;
@@ -17,13 +19,13 @@ namespace Solution::Part3
         T getSecondDerivative ( std::size_t index );
         T interpolateInner ( T x );
     public:
-        CubicSplineInterpolation ();
-        void fit ( const std::vector < T > & x , const std::vector < T > & y );
-        std::vector < T > interpolate ( const std::vector < T > & x );
-        std::vector < T > getCoefficients ();
+        CubicSplineInterpolator ();
+        void fit ( const std::vector < T > & x , const std::vector < T > & y ) override;
+        std::vector < T > interpolate ( const std::vector < T > & x ) override;
+        std::vector < T > getCoefficients () override;
     };
     template < class T >
-    T CubicSplineInterpolation < T >::getSecondDerivative ( std::size_t index )
+    T CubicSplineInterpolator < T >::getSecondDerivative ( std::size_t index )
     {
         if ( index == 0 || index == this->xValues.size () - 1 )
         {
@@ -32,7 +34,7 @@ namespace Solution::Part3
         return this->xCoeffs[ index - 1 ];
     }
     template < class T >
-    T CubicSplineInterpolation < T >::interpolateInner ( T x )
+    T CubicSplineInterpolator < T >::interpolateInner ( T x )
     {
         if ( x < this->xValues[ 0 ] || x > this->xValues[ this->xValues.size () - 1 ] )
         {
@@ -78,14 +80,14 @@ namespace Solution::Part3
             // @formatter:on
     }
     template < class T >
-    CubicSplineInterpolation < T >::CubicSplineInterpolation ()
+    CubicSplineInterpolator < T >::CubicSplineInterpolator ()
     {
         this->xValues = std::vector < T > ();
         this->yValues = std::vector < T > ();
         this->xCoeffs = std::vector < T > ();
     }
     template < class T >
-    void CubicSplineInterpolation < T >::fit ( const std::vector < T > & x , const std::vector < T > & y )
+    void CubicSplineInterpolator < T >::fit ( const std::vector < T > & x , const std::vector < T > & y )
     {
         if ( x.size () != y.size () )
         {
@@ -155,7 +157,7 @@ namespace Solution::Part3
         this->isFit = true;
     }
     template < class T >
-    std::vector < T > CubicSplineInterpolation < T >::interpolate ( const std::vector < T > & x )
+    std::vector < T > CubicSplineInterpolator < T >::interpolate ( const std::vector < T > & x )
     {
         if ( !this->isFit )
         {
@@ -170,7 +172,7 @@ namespace Solution::Part3
         return resultVector;
     }
     template < class T >
-    std::vector < T > CubicSplineInterpolation < T >::getCoefficients ()
+    std::vector < T > CubicSplineInterpolator < T >::getCoefficients ()
     {
         std::vector < T > result ( this->xCoeffs );
         result.insert ( result.begin () , ( T && ) 0 );
@@ -178,4 +180,4 @@ namespace Solution::Part3
         return result;
     }
 }
-#endif //COURSEWORKONE_CUBICSPLINEINTERPOLATION_HPP
+#endif //COURSEWORKONE_CUBICSPLINEINTERPOLATOR_HPP
