@@ -14,25 +14,42 @@ int main ()
 }
 void presentPart1 ()
 {
-    int n;
-    std::cout << "\nEnter the no. of equations\n";
-    std::cin >> n;                //input the no. of equations
+	std::cout << std::fixed;
+    std::cout << std::setprecision(2);
+	
+    int option = 0, debug = 0;
 
-    GaussElimination GL ( n );
-    std::cout << "\nEnter the elements of the matrix row by row space separated:\n";
-    GL.SetSource ();
-    GL.Apply_Pivotisation ();
-    GL.Print_Matrix ( GL._matrix );
-    std::cout << "\n==================================================\n";
-    GL.Perform_Elimination ();
-    std::cout << "\n==================================================\n";
-    GL.back_substitution ();
-    std::cout << "\nThe values of the variables are as follows:\n";
-    for ( int i = 0; i < GL.nd; i++ )
-    {
-        std::cout << GL.result[ i ] << std::endl; // Print the values of x, y,z,....
-    }
+	Gauss G;
+
+	cout << "enter 1 for debug " << endl;
+	cin >> debug;
+
+	if (debug == 1) {
+		G.debug_mode = true;
+	}
+
+	cout << "\nEnter the elements of the matrix row by row space separated:\n";
+
+	G.SetSource();
+
+	//cout << GL.valid_solution << endl;
+
+	cout << "enter 1 for GaussElimination or 2 for seidel" << endl;
+	cin >> option;
+
+	if (option == 1) {
+		G.Apply_Elimination();
+
+	} else {
+		G.ApplySeidel(30);
+	}
+
+	cout << "\nThe values of the variables are as follows:\n";
+	for (int i = 0; i < G.nd; i++)
+		cout << G.result[i] << endl;         // Print the values of x, y,z,....
+	
 }
+
 void presentPart3 ()
 {
     std::vector < float_type > d1Xs;
