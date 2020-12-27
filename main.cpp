@@ -63,7 +63,7 @@ void presentPart3 ()
     auto d2NewtPredTestYs = d2NewtonInterpolation.interpolate ( testD2Xs );
     printPredictionResult ( d2Xs , d2Ys , d2NewtPredYs , R"(..\datasets\part_3\Newt_Pred_Points_2.csv)" );
     printPredictionResult ( testD2Xs , d2NewtPredTestYs , d2NewtPredTestYs , R"(..\datasets\part_3\Newt_Test_Pred_Points_2.csv)" );
-    printCoefficients ( d2NewtonInterpolation.getCoefficients () , R"(..\datasets\part_3\Newt_Coeff_1.csv)" );
+    printCoefficients ( d2NewtonInterpolation.getCoefficients () , R"(..\datasets\part_3\Newt_Coeff_2.csv)" );
     /** Now using the cubic spline */
     auto d1CubicSplineInterpolation = Solution::Part3::CubicSplineInterpolation < float_type > ();
     /** Fitting the data */
