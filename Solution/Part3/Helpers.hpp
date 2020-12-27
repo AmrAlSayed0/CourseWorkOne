@@ -5,7 +5,6 @@
 #include <fstream>
 #include <sstream>
 #include <algorithm>
-#include "../../MatrixLib/Matrix.hpp"
 namespace Helpers
 {
     template < class T >
@@ -72,8 +71,6 @@ void readXAndYValues ( const std::string & path , std::vector < T > & xValues , 
 template < class T >
 std::vector < T > getTestXs ( std::vector < T > & vector );
 template < class T >
-void printMatrix ( Core::Matrix < T > & mat );
-template < class T >
 void printPredictionResult ( const std::vector < T > & xValues , const std::vector < T > & yValues , const std::vector < T > & predictedYValues , const std::string & outputFilePath );
 template < class T >
 void printCoefficients ( std::vector < T > coefficients , const std::string & filePath );
@@ -131,21 +128,6 @@ std::vector < T > getTestXs ( std::vector < T > & vector )
         result[ i ] = result[ i - 1 ] - diffInterval;
     }
     return result;
-}
-template < class T >
-void printMatrix ( Core::Matrix < T > & mat )
-{
-    size_t numOfRows = mat.numOfRows ();
-    size_t numOfColumn = mat.numOfColumns ();
-    for ( std::size_t i = 0; i < numOfRows; ++i )
-    {
-        for ( std::size_t j = 0; j < numOfColumn; ++j )
-        {
-            printf ( "%-5.2f" , mat ( i + 1 , j + 1 ) );
-        }
-        printf ( "\n" );
-    }
-    printf ( "\n" );
 }
 template < class T >
 void printPredictionResult ( const std::vector < T > & xValues , const std::vector < T > & yValues , const std::vector < T > & predictedYValues , const std::string & outputFilePath )
