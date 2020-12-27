@@ -11,7 +11,7 @@ namespace Solution::Part3
      */
     template < class T >
     class NewtonInterpolator
-        : Interpolator < T >
+        : public Interpolator < T >
     {
     private:
         /**
@@ -31,120 +31,110 @@ namespace Solution::Part3
          * @param x The X value to interpolate.
          * @return The interpolated Y value.
          */
-        T interpolateInner ( T x );
+        T interpolateInner ( T x )
+        {
+            std::size_t n = this->bValues.size ();
+            /** If it is outside of the range, return the minimum possible value for the used float type */
+            if ( x < this->xValues[ 0 ] || x > this->xValues[ n - 1 ] )
+            {
+                return std::numeric_limits < T >::min ();
+            }
+            T result = 0;
+            /** 𝑓ₙ(𝑥) = b₀ + b₁(𝑥−𝑥₀) + ⋯ + bₙ(𝑥−𝑥₀)(𝑥−𝑥₁)⋯(𝑥−𝑥ₙ₋₁) */
+            for ( std::size_t i = 0; i < n; ++i )
+            {
+                T product = this->bValues[ i ];
+                for ( std::size_t j = 0; j < i; ++j )
+                {
+                    product *= ( x - this->xValues[ j ] );
+                }
+                result += product;
+            }
+            return result;
+        }
     public:
         /**
          * @brief Default constructor. Does nothing.
          */
-        NewtonInterpolator ();
+        NewtonInterpolator ()
+        {
+            this->xValues = std::vector < T > ();
+            this->bValues = std::vector < T > ();
+        }
         /**
          * @brief Used to build a polynomial that fit the supplied points. This should be the first method to use on this class.
          * @param x The X values of the points to fit.
          * @param y The Y values of the pints to fit.
          */
-        void fit ( const std::vector < T > & x , const std::vector < T > & y ) override;
+        void fit ( const std::vector < T > & x , const std::vector < T > & y ) override
+        {
+            /** If the x values are more than the y values, there will be x values that have no corresponding y value. The fit can't be completed */
+            if ( x.size () > y.size () )
+            {
+                throw std::invalid_argument ( "The 2 vectors must be of the same size." );
+            }
+            std::size_t n = x.size ();
+            /** This is a store for the intermediate calculations. Will be discarded in the end */
+            std::vector < T > calculationVector = std::vector < T > ( n );
+            /** Clear and resize the bᵢ values to allow the same class to be used with multiple fits */
+            this->bValues.clear ();
+            this->bValues.resize ( n );
+            for ( std::size_t i = 0; i < n; ++i )
+            {
+                if ( i == 0 )
+                {
+                    /** Initialize the vector with the y values that will be used in the following iterations */
+                    for ( std::size_t j = 0; j < n; ++j )
+                    {
+                        calculationVector[ j ] = y[ j ];
+                    }
+                }
+                else
+                {
+                    /** 𝑓[𝑥ₙ,𝑥ₙ₋₁,...,𝑥₁,𝑥₀] = ( 𝑓[𝑥ₙ,𝑥ₙ₋₁,...,𝑥₁] - 𝑓[𝑥ₙ₋₁,𝑥ₙ₋₂,...,𝑥₀] ) / ( 𝑥ₙ − 𝑥₀ ) */
+                    for ( std::size_t j = 0; j < ( n - i ); ++j )
+                    {
+                        calculationVector[ j ] = ( ( calculationVector[ j + 1 ] - calculationVector[ j ] ) / ( x[ j + i ] - x[ j ] ) );
+                    }
+                }
+                this->bValues[ i ] = calculationVector[ 0 ];
+            }
+            /** Saving the X values too because it is needed for the interpolation */
+            this->xValues.clear ();
+            this->xValues.resize ( n );
+            for ( int i = 0; i < n; ++i )
+            {
+                this->xValues[ i ] = x[ i ];
+            }
+            this->isFit = true;
+        }
         /**
          * @brief Calculates interpolated values for the supplied X values. The method "fit" MUST be called before calling this method.
          * @param x The X values to calculate y values for.
          * @return
          */
-        std::vector < T > interpolate ( const std::vector < T > & x ) override;
+        std::vector < T > interpolate ( const std::vector < T > & x ) override
+        {
+            if ( !this->isFit )
+            {
+                return std::vector < T > ();
+            }
+            std::size_t n = x.size ();
+            std::vector < T > resultVector = std::vector < T > ( n );
+            for ( std::size_t i = 0; i < n; ++i )
+            {
+                resultVector[ i ] = this->interpolateInner ( x[ i ] );
+            }
+            return resultVector;
+        }
         /**
          * @brief Get the values of the bᵢ coefficients after the fit.
          * @return The values of the bᵢ coefficients. Returns an empty vector if "fit" was never called.
          */
-        std::vector < T > getCoefficients () override;
+        std::vector < T > getCoefficients () override
+        {
+            return this->bValues;
+        }
     };
-    template < class T >
-    NewtonInterpolator < T >::NewtonInterpolator ()
-    {
-        this->xValues = std::vector < T > ();
-        this->bValues = std::vector < T > ();
-    }
-    template < class T >
-    T NewtonInterpolator < T >::interpolateInner ( T x )
-    {
-        std::size_t n = this->bValues.size ();
-        /** If it is outside of the range, return the minimum possible value for the used float type */
-        if ( x < this->xValues[ 0 ] || x > this->xValues[ n - 1 ] )
-        {
-            return std::numeric_limits < T >::min ();
-        }
-        T result = 0;
-        /** 𝑓ₙ(𝑥) = b₀ + b₁(𝑥−𝑥₀) + ⋯ + bₙ(𝑥−𝑥₀)(𝑥−𝑥₁)⋯(𝑥−𝑥ₙ₋₁) */
-        for ( std::size_t i = 0; i < n; ++i )
-        {
-            T product = this->bValues[ i ];
-            for ( std::size_t j = 0; j < i; ++j )
-            {
-                product *= ( x - this->xValues[ j ] );
-            }
-            result += product;
-        }
-        return result;
-    }
-    template < class T >
-    void NewtonInterpolator < T >::fit ( const std::vector < T > & x , const std::vector < T > & y )
-    {
-        /** If the x values are more than the y values, there will be x values that have no corresponding y value. The fit can't be completed */
-        if ( x.size () > y.size () )
-        {
-            throw std::invalid_argument ( "The 2 vectors must be of the same size." );
-        }
-        std::size_t n = x.size ();
-        /** This is a store for the intermediate calculations. Will be discarded in the end */
-        std::vector < T > calculationVector = std::vector < T > ( n );
-        /** Clear and resize the bᵢ values to allow the same class to be used with multiple fits */
-        this->bValues.clear ();
-        this->bValues.resize ( n );
-        for ( std::size_t i = 0; i < n; ++i )
-        {
-            if ( i == 0 )
-            {
-                /** Initialize the vector with the y values that will be used in the following iterations */
-                for ( std::size_t j = 0; j < n; ++j )
-                {
-                    calculationVector[ j ] = y[ j ];
-                }
-            }
-            else
-            {
-                /** 𝑓[𝑥ₙ,𝑥ₙ₋₁,...,𝑥₁,𝑥₀] = ( 𝑓[𝑥ₙ,𝑥ₙ₋₁,...,𝑥₁] - 𝑓[𝑥ₙ₋₁,𝑥ₙ₋₂,...,𝑥₀] ) / ( 𝑥ₙ − 𝑥₀ ) */
-                for ( std::size_t j = 0; j < ( n - i ); ++j )
-                {
-                    calculationVector[ j ] = ( ( calculationVector[ j + 1 ] - calculationVector[ j ] ) / ( x[ j + i ] - x[ j ] ) );
-                }
-            }
-            this->bValues[ i ] = calculationVector[ 0 ];
-        }
-        /** Saving the X values too because it is needed for the interpolation */
-        this->xValues.clear ();
-        this->xValues.resize ( n );
-        for ( int i = 0; i < n; ++i )
-        {
-            this->xValues[ i ] = x[ i ];
-        }
-        this->isFit = true;
-    }
-    template < class T >
-    std::vector < T > NewtonInterpolator < T >::interpolate ( const std::vector < T > & x )
-    {
-        if ( !this->isFit )
-        {
-            return std::vector < T > ();
-        }
-        std::size_t n = x.size ();
-        std::vector < T > resultVector = std::vector < T > ( n );
-        for ( std::size_t i = 0; i < n; ++i )
-        {
-            resultVector[ i ] = this->interpolateInner ( x[ i ] );
-        }
-        return resultVector;
-    }
-    template < class T >
-    std::vector < T > NewtonInterpolator < T >::getCoefficients ()
-    {
-        return this->bValues;
-    }
 }
 #endif //COURSEWORKONE_NEWTONINTERPOLATOR_HPP

@@ -9,6 +9,7 @@ namespace Solution::Part3
     template < class T >
     class Interpolator
     {
+    public:
         /**
          * @brief Used to build a polynomial that fit the supplied points. This should be the first method to use on this class.
          * @param x The X values of the points to fit.
