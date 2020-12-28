@@ -2,7 +2,8 @@
 #include <iostream>
 #include <vector>
 #include <iomanip>
-#include "Solution/Part1/Gauss.h"
+#include "Solution/Part1/GaussSeidel.hpp"
+#include "Solution/Part1/GaussElimination.hpp" 
 #include "Solution/Part3/CubicSplineInterpolator.hpp"
 #include "Solution/Part3/Helpers.hpp"
 #include "Solution/Part3/NewtonInterpolator.hpp"
@@ -17,34 +18,43 @@ void presentPart1 ()
 {
     std::cout << std::fixed;
     std::cout << std::setprecision ( 2 );
-    int option = 0 , debug = 0;
-    Gauss G;
-    std::cout << "enter 1 for debug " << std::endl;
-    std::cin >> debug;
-    if ( debug == 1 )
-    {
-        G.debug_mode = true;
-    }
-    std::cout << "\nEnter the elements of the matrix row by row space separated:\n";
-    G.SetSource ();
+    int option = 0, debug = 0;
 
-    //cout << GL.valid_solution << endl;
+	Solver *S;
 
-    std::cout << "enter 1 for GaussElimination or 2 for seidel" << std::endl;
-    std::cin >> option;
-    if ( option == 1 )
-    {
-        G.Apply_Elimination ();
-    }
-    else
-    {
-        G.ApplySeidel ( 30 );
-    }
-    std::cout << "\nThe values of the variables are as follows:\n";
-    for ( int i = 0; i < G.nd; i++ )
-    {
-        std::cout << G.result[ i ] << std::endl;
-    }         // Print the values of x, y,z,....
+	cout << "enter 1 for debug " << endl;
+	cin >> debug;
+
+	//cout << GL.valid_solution << endl;
+
+	cout << "enter 1 for GaussElimination or 2 for seidel" << endl;
+	cin >> option;
+
+	if (option == 1) {
+
+		GaussElimination g;
+		S = &g;
+		if (debug == 1) {
+			S->debug_mode = true;
+		}
+		S->SetSource();
+		S->Apply();
+
+	} else {
+
+		GaussSeidel g(30);
+		S = &g;
+		if (debug == 1) {
+			S->debug_mode = true;
+		}
+		S->SetSource();
+		S->Apply();
+	}
+
+	cout << "\nThe values of the variables are as follows:\n";
+	for (int i = 0; i < S->nd; i++)
+		cout << S->result[i] << endl;         // Print the values of x, y,z,....
+
 
 }
 void presentPart3 ()
