@@ -1,7 +1,14 @@
+/*
+ * Helpers.hpp
+ *
+ *  Created on: Dec 13, 2020
+ *      Author: Amr Al-Sayed
+ */
 #ifndef COURSEWORKONE_HELPERS_HPP
 #define COURSEWORKONE_HELPERS_HPP
 #include <string>
 #include <vector>
+#include <cmath>
 #include <fstream>
 #include <sstream>
 #include <algorithm>
@@ -141,16 +148,19 @@ void printPredictionResult ( const std::vector < T > & xValues , const std::vect
         T y = yValues[ i ];
         T yPred = predictedYValues[ i ];
         T diff = std::fabs ( y - yPred );
-        std::string formatString = "X = %-50.45";
-        formatString += Helpers::getFloatFormat < T > ();
-        formatString += " , Y = %-50.45";
-        formatString += Helpers::getFloatFormat < T > ();
-        formatString += " , Y` = %-50.45";
-        formatString += Helpers::getFloatFormat < T > ();
-        formatString += " , Diff = %-50.45";
-        formatString += Helpers::getFloatFormat < T > ();
-        formatString += " \n";
-        printf ( formatString.c_str () , x , y , yPred , diff );
+        std::string formatString;
+        /*
+                formatString = "X = %-50.45";
+                formatString += Helpers::getFloatFormat < T > ();
+                formatString += " , Y = %-50.45";
+                formatString += Helpers::getFloatFormat < T > ();
+                formatString += " , Y` = %-50.45";
+                formatString += Helpers::getFloatFormat < T > ();
+                formatString += " , Diff = %-50.45";
+                formatString += Helpers::getFloatFormat < T > ();
+                formatString += " \n";
+                printf ( formatString.c_str () , x , y , yPred , diff );
+        */
         formatString = "%-47.45";
         formatString += Helpers::getFloatFormat < T > ();
         formatString += ",%-47.45";

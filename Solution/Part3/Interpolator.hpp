@@ -1,3 +1,9 @@
+/*
+ * Interpolator.hpp
+ *
+ *  Created on: Dec 13, 2020
+ *      Author: Amr Al-Sayed
+ */
 #ifndef COURSEWORKONE_INTERPOLATOR_HPP
 #define COURSEWORKONE_INTERPOLATOR_HPP
 #include <vector>

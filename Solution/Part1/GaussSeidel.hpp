@@ -1,27 +1,23 @@
 /*
- * GaussElimination.h
+ * GaussSeidel.hpp
  *
  *  Created on: Dec 13, 2020
- *      Author: asamir
+ *      Author: Ahmed Samir
  */
-
-#ifndef GaussSeidel_H_
-#define GaussSeidel_H_
-
+#ifndef COURSEWORKONE_GAUSSSEIDEL_HPP
+#define COURSEWORKONE_GAUSSSEIDEL_HPP
 #include "Solver.hpp"
-
-class GaussSeidel :public Solver {
-
-private:
-	int numberOfIteration;
-
-	void Seidel_Core();
-
-public:
-
-	GaussSeidel(int numberOfIteration);
-
-	float* Apply();
-};
-
-#endif /* GaussSeidel_H_ */
+namespace Solution::Part1
+{
+    class GaussSeidel
+        : public Solution::Part1::Solver
+    {
+    private:
+        int numberOfIteration;
+        void Seidel_Core ();
+    public:
+        GaussSeidel ( int numberOfIteration );
+        float * Apply ();
+    };
+}
+#endif //COURSEWORKONE_GAUSSSEIDEL_HPP
