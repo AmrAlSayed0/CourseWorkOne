@@ -129,6 +129,12 @@ void cf_regression::fit_mlreg(std::vector<std::vector<float>> x,
         arrnd[i][order + 1] = sum;
     }
 
+    g_seidel.ImportSource(arrnd, rows);
+    g_seidel.ApplySeidel(SEIDEL_ITER);
+
+    g_elemination.ImportSource(arrnd, rows);
+    g_elemination.Apply_Elimination();
+
     delete arrnd;
 }
 
@@ -148,6 +154,6 @@ void cf_regression::predict_mlreg(float x) {
         x_val += (g_elemination.result[i] * std::pow(x, i));
     }
 
-    /*std::cout << "[elimination] Y for X = "
-        << x << ": " << x_val << std::endl;*/
+    std::cout << "[elimination] Y for X = "
+        << x << ": " << x_val << std::endl;
 }
