@@ -1,7 +1,7 @@
 #include "cf_regression.h"
-#include "../Gauss.h"
+#include "gauss.h"
 
-#define SEIDEL_ITER 3
+#define SEIDEL_ITER 10
 
 int g_order;
 
@@ -58,18 +58,18 @@ void cf_regression::fit_polyreg(std::vector<float> x,
     g_seidel.ImportSource(arrnd, rows);
     g_seidel.ApplySeidel(SEIDEL_ITER);
 
-    /*for (int i = 0; i < g_seidel.nd; i++) {
+    for (int i = 0; i < g_seidel.nd; i++) {
         std::cout << g_seidel.result[i] << std::endl;
-    }*/
+    }
 
     std::cout << std::endl;
 
     g_elemination.ImportSource(arrnd, rows);
     g_elemination.Apply_Elimination();
 
-    /*for (int i = 0; i < g_elemination.nd; i++) {
+    for (int i = 0; i < g_elemination.nd; i++) {
         std::cout << g_elemination.result[i] << std::endl;
-    }*/
+    }
 
     delete arrnd;
 }
@@ -90,8 +90,8 @@ void cf_regression::predict_polyreg(float x) {
         x_val += (g_elemination.result[i] * std::pow(x, i));
     }
 
-    std::cout << "[elimination] Y for X = " 
-        << x << ": " << x_val << std::endl;
+    /*std::cout << "[elimination] Y for X = " 
+        << x << ": " << x_val << std::endl;*/
 }
 
 void cf_regression::fit_mlreg(std::vector<std::vector<float>> x, 
@@ -108,7 +108,7 @@ void cf_regression::fit_mlreg(std::vector<std::vector<float>> x,
         arrnd[i] = new float[cols];
     }
 
-    for (int i = 0; i < (order + 1); i++) {
+    for (int i = 0; i < order; i++) {
         for (int j = 0; j <= i; j++) {
             sum = 0.0;
 
@@ -130,4 +130,24 @@ void cf_regression::fit_mlreg(std::vector<std::vector<float>> x,
     }
 
     delete arrnd;
+}
+
+void cf_regression::predict_mlreg(float x) {
+    float x_val = 0.0;
+
+    for (int i = 0; i < g_order; i++) {
+        x_val += (g_seidel.result[i] * std::pow(x, i));
+    }
+
+    std::cout << "[Seidel] Y for X = "
+        << x << ": " << x_val << std::endl;
+
+    x_val = 0.0;
+
+    for (int i = 0; i < g_order; i++) {
+        x_val += (g_elemination.result[i] * std::pow(x, i));
+    }
+
+    /*std::cout << "[elimination] Y for X = "
+        << x << ": " << x_val << std::endl;*/
 }
