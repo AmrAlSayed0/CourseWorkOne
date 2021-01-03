@@ -1,11 +1,17 @@
+/*
+ * Helpers.hpp
+ *
+ *  Created on: Dec 13, 2020
+ *      Author: Amr Al-Sayed
+ */
 #ifndef COURSEWORKONE_HELPERS_HPP
 #define COURSEWORKONE_HELPERS_HPP
 #include <string>
 #include <vector>
+#include <cmath>
 #include <fstream>
 #include <sstream>
 #include <algorithm>
-#include "../../MatrixLib/Matrix.hpp"
 namespace Helpers
 {
     template < class T >
@@ -72,8 +78,6 @@ void readXAndYValues ( const std::string & path , std::vector < T > & xValues , 
 template < class T >
 std::vector < T > getTestXs ( std::vector < T > & vector );
 template < class T >
-void printMatrix ( Core::Matrix < T > & mat );
-template < class T >
 void printPredictionResult ( const std::vector < T > & xValues , const std::vector < T > & yValues , const std::vector < T > & predictedYValues , const std::string & outputFilePath );
 template < class T >
 void printCoefficients ( std::vector < T > coefficients , const std::string & filePath );
@@ -133,21 +137,6 @@ std::vector < T > getTestXs ( std::vector < T > & vector )
     return result;
 }
 template < class T >
-void printMatrix ( Core::Matrix < T > & mat )
-{
-    size_t numOfRows = mat.numOfRows ();
-    size_t numOfColumn = mat.numOfColumns ();
-    for ( std::size_t i = 0; i < numOfRows; ++i )
-    {
-        for ( std::size_t j = 0; j < numOfColumn; ++j )
-        {
-            printf ( "%-5.2f" , mat ( i + 1 , j + 1 ) );
-        }
-        printf ( "\n" );
-    }
-    printf ( "\n" );
-}
-template < class T >
 void printPredictionResult ( const std::vector < T > & xValues , const std::vector < T > & yValues , const std::vector < T > & predictedYValues , const std::string & outputFilePath )
 {
     std::ofstream out ( outputFilePath , std::ios::trunc | std::ios::out );
@@ -159,16 +148,19 @@ void printPredictionResult ( const std::vector < T > & xValues , const std::vect
         T y = yValues[ i ];
         T yPred = predictedYValues[ i ];
         T diff = std::fabs ( y - yPred );
-        std::string formatString = "X = %-50.45";
-        formatString += Helpers::getFloatFormat < T > ();
-        formatString += " , Y = %-50.45";
-        formatString += Helpers::getFloatFormat < T > ();
-        formatString += " , Y` = %-50.45";
-        formatString += Helpers::getFloatFormat < T > ();
-        formatString += " , Diff = %-50.45";
-        formatString += Helpers::getFloatFormat < T > ();
-        formatString += " \n";
-        printf ( formatString.c_str () , x , y , yPred , diff );
+        std::string formatString;
+        /*
+                formatString = "X = %-50.45";
+                formatString += Helpers::getFloatFormat < T > ();
+                formatString += " , Y = %-50.45";
+                formatString += Helpers::getFloatFormat < T > ();
+                formatString += " , Y` = %-50.45";
+                formatString += Helpers::getFloatFormat < T > ();
+                formatString += " , Diff = %-50.45";
+                formatString += Helpers::getFloatFormat < T > ();
+                formatString += " \n";
+                printf ( formatString.c_str () , x , y , yPred , diff );
+        */
         formatString = "%-47.45";
         formatString += Helpers::getFloatFormat < T > ();
         formatString += ",%-47.45";
