@@ -15,7 +15,7 @@ int main ()
 void presentPart1 ()
 {
 	std::cout << std::fixed;
-    std::cout << std::setprecision(2);
+    std::cout << std::setprecision(4);
 	
     int option = 0, debug = 0;
 
