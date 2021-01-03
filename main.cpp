@@ -1,6 +1,7 @@
 #include <memory>
 #include <iostream>
 #include <vector>
+#include <iomanip>
 #include "Solution/Part1/GaussElimination.hpp"
 #include "Solution/Part1/GaussSeidel.hpp"
 #include "Solution/Part3/Helpers.hpp"
@@ -15,8 +16,8 @@ int main ()
 }
 void presentPart1 ()
 {
-	std::cout << std::fixed;
-    std::cout << std::setprecision(4);
+    std::cout << std::fixed;
+    std::cout << std::setprecision ( 4 );
     int option = 0 , debug = 0;
     Solution::Part1::Solver * S;
     cout << "enter 1 for debug " << endl;
