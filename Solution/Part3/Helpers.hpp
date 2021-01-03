@@ -140,7 +140,9 @@ template < class T >
 void printPredictionResult ( const std::vector < T > & xValues , const std::vector < T > & yValues , const std::vector < T > & predictedYValues , const std::string & outputFilePath )
 {
     std::ofstream out ( outputFilePath , std::ios::trunc | std::ios::out );
+/*
     printf ( "X,Y,Y',Diff\n" );
+*/
     out << "X,Y,Y',Diff\n";
     for ( std::size_t i = 0; i < xValues.size (); ++i )
     {
